@@ -1,0 +1,1 @@
+package com.minibank.transfers.integration.adapter.ms.user.client;
