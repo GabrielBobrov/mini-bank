@@ -1,0 +1,1 @@
+package com.minibank.transfers.entrypoint.rest.dto;
