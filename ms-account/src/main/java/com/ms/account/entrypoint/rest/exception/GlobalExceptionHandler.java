@@ -4,6 +4,7 @@ package com.ms.account.entrypoint.rest.exception;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import com.ms.account.core.exception.NotFoundException;
 import com.ms.account.entrypoint.rest.exception.model.Problem;
 import com.ms.account.entrypoint.rest.exception.model.enums.ProblemType;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +47,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	public GlobalExceptionHandler(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	@ExceptionHandler({NotFoundException.class})
+	public ResponseEntity<Object> handleBusiness(RuntimeException ex, WebRequest request) {
+
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
+		String detail = ex.getMessage();
+
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
+				.build();
+
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler(IllegalArgumentException.class)

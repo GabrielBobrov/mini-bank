@@ -1,7 +1,7 @@
 package com.ms.account.core.adapter.service;
 
-import com.ms.account.core.adapter.service.AccountServiceImpl;
 import com.ms.account.core.model.CreateAccountModel;
+import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
 import com.ms.account.dummy.AccountDummy;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,7 +31,7 @@ class AccountServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        createAccountModel = AccountDummy.accountModelBuilder().build();
+        createAccountModel = AccountDummy.createAccountModelBuilder().build();
     }
 
     @Test
@@ -46,5 +50,32 @@ class AccountServiceImplTest {
         accountServiceImpl.save(null);
 
         verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
+    }
+
+    @Test
+    @DisplayName("Test the 'getAccount' method when a valid UUID is passed")
+    void testGetAccountWhenValidUUIDThenReturnAccount() {
+        UUID uuid = UUID.randomUUID();
+        GetAccountModel getAccountModel = GetAccountModel.builder().id(uuid).build();
+
+        when(accountRepositoryPort.getAccount(uuid)).thenReturn(getAccountModel);
+
+        GetAccountModel result = accountServiceImpl.getAccount(uuid);
+
+        assertEquals(getAccountModel, result);
+        verify(accountRepositoryPort, times(1)).getAccount(uuid);
+    }
+
+    @Test
+    @DisplayName("Test the 'getAccount' method when the repository returns null")
+    void testGetAccountWhenRepositoryReturnsNullThenReturnNull() {
+        UUID uuid = UUID.randomUUID();
+
+        when(accountRepositoryPort.getAccount(uuid)).thenReturn(null);
+
+        GetAccountModel result = accountServiceImpl.getAccount(uuid);
+
+        assertNull(result);
+        verify(accountRepositoryPort, times(1)).getAccount(uuid);
     }
 }

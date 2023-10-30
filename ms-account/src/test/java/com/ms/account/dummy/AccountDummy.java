@@ -1,17 +1,20 @@
 package com.ms.account.dummy;
 
 import com.ms.account.core.model.CreateAccountModel;
+import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
+import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
 import com.ms.account.infrastructure.entity.AccountEntity;
+import org.junit.platform.engine.TestDescriptor;
+import org.junit.platform.engine.support.discovery.EngineDiscoveryRequestResolver;
 
 import java.util.UUID;
 
 public class AccountDummy {
 
-    public static CreateAccountModel.CreateAccountModelBuilder accountModelBuilder() {
+    public static CreateAccountModel.CreateAccountModelBuilder createAccountModelBuilder() {
         return CreateAccountModel.builder()
-                .firstName("firstName")
-                .id(UUID.randomUUID());
+                .firstName("firstName");
     }
 
     public static AccountEntity.AccountEntityBuilder accountEntityBuilder() {
@@ -23,5 +26,17 @@ public class AccountDummy {
     public static CreateAccountRequestDTO.CreateAccountRequestDTOBuilder createAccountRequestDTOBuilder() {
         return CreateAccountRequestDTO.builder()
                 .firstName("john");
+    }
+
+    public static GetAccountModel.GetAccountModelBuilder getAccountModelBuilder() {
+        return GetAccountModel.builder()
+                .firstName("firstName")
+                .id(UUID.randomUUID());
+    }
+
+    public static GetAccountResponseDTO.GetAccountResponseDTOBuilder getAccountResponseDTOBuilder() {
+        return GetAccountResponseDTO.builder()
+                .firstName("Gabriel")
+                .id(UUID.randomUUID());
     }
 }
