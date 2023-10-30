@@ -1,8 +1,8 @@
 package com.ms.account.core.ports.in;
 
-import com.ms.account.core.model.AccountModel;
+import com.ms.account.core.model.CreateAccountModel;
 
 public interface AccountPort {
 
-    void save(AccountModel accountModel);
+    void save(CreateAccountModel createAccountModel);
 }

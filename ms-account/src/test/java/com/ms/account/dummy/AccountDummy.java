@@ -1,6 +1,6 @@
 package com.ms.account.dummy;
 
-import com.ms.account.core.model.AccountModel;
+import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.infrastructure.entity.AccountEntity;
 
@@ -8,8 +8,8 @@ import java.util.UUID;
 
 public class AccountDummy {
 
-    public static AccountModel.AccountModelBuilder accountModelBuilder() {
-        return AccountModel.builder()
+    public static CreateAccountModel.CreateAccountModelBuilder accountModelBuilder() {
+        return CreateAccountModel.builder()
                 .firstName("firstName")
                 .id(UUID.randomUUID());
     }

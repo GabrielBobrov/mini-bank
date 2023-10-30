@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountModel {
+public class CreateAccountModel {
 
     private UUID id;
     private String firstName;

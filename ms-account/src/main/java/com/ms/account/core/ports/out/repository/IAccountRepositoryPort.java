@@ -1,8 +1,8 @@
 package com.ms.account.core.ports.out.repository;
 
-import com.ms.account.core.model.AccountModel;
+import com.ms.account.core.model.CreateAccountModel;
 
 public interface IAccountRepositoryPort {
 
-    void save(AccountModel accountModel);
+    void save(CreateAccountModel createAccountModel);
 }

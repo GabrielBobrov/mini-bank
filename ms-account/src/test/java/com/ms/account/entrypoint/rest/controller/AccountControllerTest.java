@@ -1,7 +1,7 @@
 package com.ms.account.entrypoint.rest.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ms.account.core.model.AccountModel;
+import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.ports.in.AccountPort;
 import com.ms.account.dummy.AccountDummy;
 import com.ms.account.entrypoint.rest.UrlConstant;
@@ -15,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
@@ -40,16 +38,16 @@ class AccountControllerTest {
     @Test
     void testCreateAccountWhenValidRequestThenReturnCreated() throws Exception {
         CreateAccountRequestDTO requestDTO = AccountDummy.createAccountRequestDTOBuilder().build();
-        AccountModel accountModel = AccountDummy.accountModelBuilder().build();
+        CreateAccountModel createAccountModel = AccountDummy.accountModelBuilder().build();
 
-        when(accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(requestDTO)).thenReturn(accountModel);
+        when(accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(requestDTO)).thenReturn(createAccountModel);
 
         mockMvc.perform(MockMvcRequestBuilders.post(UrlConstant.ACCOUNT_URI)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 
-        verify(accountPort).save(accountModel);
+        verify(accountPort).save(createAccountModel);
     }
 
     @Test

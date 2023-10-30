@@ -1,10 +1,9 @@
 package com.ms.account.entrypoint.rest.controller;
 
-import com.ms.account.core.model.AccountModel;
+import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.ports.in.AccountPort;
 import com.ms.account.entrypoint.rest.UrlConstant;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
-import com.ms.account.entrypoint.rest.dto.response.CreateAccountResponseDTO;
 import com.ms.account.entrypoint.rest.mapper.AccountEntrypointMapper;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -31,9 +30,9 @@ public class AccountController {
         log.info("Class {} method save", this.getClass().getName());
         log.info("CreateAccountRequestDTO {}", accountRequestDTO);
 
-        AccountModel accountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
+        CreateAccountModel createAccountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
 
-        accountPort.save(accountModel);
+        accountPort.save(createAccountModel);
     }
 }
 

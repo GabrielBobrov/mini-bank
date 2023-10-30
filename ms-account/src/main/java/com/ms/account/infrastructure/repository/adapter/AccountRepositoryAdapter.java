@@ -1,6 +1,6 @@
 package com.ms.account.infrastructure.repository.adapter;
 
-import com.ms.account.core.model.AccountModel;
+import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
 import com.ms.account.infrastructure.entity.AccountEntity;
 import com.ms.account.infrastructure.mapper.AccountInfrastructureMapper;
@@ -19,11 +19,11 @@ public class AccountRepositoryAdapter implements IAccountRepositoryPort {
 
     @Override
     @Transactional
-    public void save(AccountModel accountModel) {
+    public void save(CreateAccountModel createAccountModel) {
         log.info("Class {} method save", this.getClass().getName());
-        log.info("AccountModel {}", accountModel);
+        log.info("AccountModel {}", createAccountModel);
 
-        AccountEntity accountEntity = accountInfrastructureMapper.fromAccountModelToAccountEntity(accountModel);
+        AccountEntity accountEntity = accountInfrastructureMapper.fromAccountModelToAccountEntity(createAccountModel);
         log.info("AccountEntity {}", accountEntity);
 
         springAccountRepository.save(accountEntity);

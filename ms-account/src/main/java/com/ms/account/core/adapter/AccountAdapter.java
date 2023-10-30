@@ -1,6 +1,6 @@
 package com.ms.account.core.adapter;
 
-import com.ms.account.core.model.AccountModel;
+import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.ports.in.AccountPort;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
 import lombok.AllArgsConstructor;
@@ -14,10 +14,10 @@ public class AccountAdapter implements AccountPort {
     private final IAccountRepositoryPort accountRepositoryPort;
 
     @Override
-    public void save(AccountModel accountModel) {
+    public void save(CreateAccountModel createAccountModel) {
         log.info("Class {} method save", this.getClass().getName());
-        log.info("AccountModel {}", accountModel);
+        log.info("AccountModel {}", createAccountModel);
 
-        accountRepositoryPort.save(accountModel);
+        accountRepositoryPort.save(createAccountModel);
     }
 }
