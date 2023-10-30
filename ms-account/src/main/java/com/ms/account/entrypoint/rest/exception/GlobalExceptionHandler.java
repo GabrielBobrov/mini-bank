@@ -1,11 +1,11 @@
-package com.ms.account.core.configuration.exception.handler;
+package com.ms.account.entrypoint.rest.exception;
 
 
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
-import com.ms.account.core.configuration.exception.handler.model.Problem;
-import com.ms.account.core.configuration.exception.handler.model.enums.ProblemType;
+import com.ms.account.entrypoint.rest.exception.model.Problem;
+import com.ms.account.entrypoint.rest.exception.model.enums.ProblemType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @ControllerAdvice
-public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	public static final String MSG_ERRO_GENERICA_USUARIO_FINAL
 			= "Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
@@ -44,11 +44,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private final MessageSource messageSource;
 
-	public ApiExceptionHandler(MessageSource messageSource) {
+	public GlobalExceptionHandler(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
-	@ExceptionHandler(IllegalArgumentException.class)
+	@org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -146,7 +146,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
-	@ExceptionHandler(Exception.class)
+	@org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		ProblemType problemType = ProblemType.SYSTEM_ERROR;

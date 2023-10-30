@@ -1,4 +1,4 @@
-package com.ms.account.core.configuration.exception.handler.model.enums;
+package com.ms.account.entrypoint.rest.exception.model.enums;
 
 import lombok.Getter;
 

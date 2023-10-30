@@ -1,4 +1,4 @@
-package com.ms.account.core.configuration.exception.handler.model;
+package com.ms.account.entrypoint.rest.exception.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
