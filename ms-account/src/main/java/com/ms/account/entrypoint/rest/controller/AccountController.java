@@ -6,6 +6,7 @@ import com.ms.account.entrypoint.rest.UrlConstant;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.CreateAccountResponseDTO;
 import com.ms.account.entrypoint.rest.mapper.AccountEntrypointMapper;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class AccountController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createAccount(@RequestBody CreateAccountRequestDTO accountRequestDTO) {
+    public void createAccount(@RequestBody @Valid CreateAccountRequestDTO accountRequestDTO) {
         log.info("Class {} method save", this.getClass().getName());
         log.info("CreateAccountRequestDTO {}", accountRequestDTO);
 
