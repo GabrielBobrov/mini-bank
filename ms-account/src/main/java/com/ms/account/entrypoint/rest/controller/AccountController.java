@@ -1,9 +1,11 @@
 package com.ms.account.entrypoint.rest.controller;
 
+import com.ms.account.core.model.AccountModel;
 import com.ms.account.core.ports.in.AccountPort;
 import com.ms.account.entrypoint.rest.UrlConstant;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.CreateAccountResponseDTO;
+import com.ms.account.entrypoint.rest.mapper.AccountEntrypointMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     private final AccountPort accountPort;
+    private final AccountEntrypointMapper accountEntrypointMapper;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateAccountResponseDTO createAccount(@RequestBody CreateAccountRequestDTO clientRequest) {
-        return CreateAccountResponseDTO.builder().build();
+    public void createAccount(@RequestBody CreateAccountRequestDTO accountRequestDTO) {
+        log.info("Class {} method save", this.getClass().getName());
+        log.info("CreateAccountRequestDTO {}", accountRequestDTO);
+
+        AccountModel accountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
+
+        accountPort.save(accountModel);
     }
 }
 
