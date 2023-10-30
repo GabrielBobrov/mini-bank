@@ -1,5 +1,6 @@
-package com.ms.account.core.adapter;
+package com.ms.account.core.adapter.service;
 
+import com.ms.account.core.adapter.service.AccountServiceImpl;
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
 import com.ms.account.dummy.AccountDummy;
@@ -14,13 +15,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AccountAdapterTest {
+class AccountServiceImplTest {
 
     @Mock
     private IAccountRepositoryPort accountRepositoryPort;
 
     @InjectMocks
-    private AccountAdapter accountAdapter;
+    private AccountServiceImpl accountServiceImpl;
 
     private CreateAccountModel createAccountModel;
 
@@ -34,7 +35,7 @@ class AccountAdapterTest {
     void testSaveWhenValidAccountModelThenSaveAccount() {
         doNothing().when(accountRepositoryPort).save(createAccountModel);
 
-        accountAdapter.save(createAccountModel);
+        accountServiceImpl.save(createAccountModel);
 
         verify(accountRepositoryPort, times(1)).save(createAccountModel);
     }
@@ -42,7 +43,7 @@ class AccountAdapterTest {
     @Test
     @DisplayName("Test the 'save' method when a null account model is passed")
     void testSaveWhenNullAccountModelThenDoNothing() {
-        accountAdapter.save(null);
+        accountServiceImpl.save(null);
 
         verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
     }

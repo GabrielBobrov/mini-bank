@@ -1,4 +1,4 @@
-package com.ms.account.core.adapter;
+package com.ms.account.core.adapter.service;
 
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.ports.in.AccountPort;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AccountAdapter implements AccountPort {
+public class AccountServiceImpl implements AccountPort {
     private final IAccountRepositoryPort accountRepositoryPort;
 
     @Override

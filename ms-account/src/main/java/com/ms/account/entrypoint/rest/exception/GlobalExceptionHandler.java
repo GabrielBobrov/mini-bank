@@ -48,7 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		this.messageSource = messageSource;
 	}
 
-	@org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
+	@ExceptionHandler(IllegalArgumentException.class)
 	public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
 
 		HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -146,7 +146,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
 
-	@org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+	@ExceptionHandler(Exception.class)
 	public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
 		ProblemType problemType = ProblemType.SYSTEM_ERROR;
