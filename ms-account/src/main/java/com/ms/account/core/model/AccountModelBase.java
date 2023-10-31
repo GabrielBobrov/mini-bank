@@ -1,5 +1,7 @@
 package com.ms.account.core.model;
 
+import com.ms.account.infrastructure.entity.enums.AccountType;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +19,6 @@ public class AccountModelBase {
     private String email;
     private String document;
     private String password;
+    private AccountType type;
 
 }

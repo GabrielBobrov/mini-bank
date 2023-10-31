@@ -3,6 +3,7 @@ package com.ms.account.entrypoint.rest.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.ms.account.infrastructure.entity.enums.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +28,6 @@ public class GetAccountResponseDTO implements Serializable {
     private String email;
     private String document;
     private String password;
+    private AccountType type;
+
 }

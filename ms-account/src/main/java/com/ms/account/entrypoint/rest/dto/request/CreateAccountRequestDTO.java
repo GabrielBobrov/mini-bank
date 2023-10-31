@@ -3,8 +3,10 @@ package com.ms.account.entrypoint.rest.dto.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.ms.account.infrastructure.entity.enums.AccountType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,4 +40,7 @@ public class CreateAccountRequestDTO  implements Serializable {
 
     @NotBlank
     private String password;
+
+    @NotNull
+    private AccountType type;
 }

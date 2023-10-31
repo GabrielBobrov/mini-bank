@@ -10,6 +10,26 @@ import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+/**
+ The AccountServiceAdapterImpl class is an implementation of the IAccountServicePort interface.
+ It provides the implementation for saving and retrieving account information.
+
+ This class is annotated with @Service to indicate that it is a Spring service component.
+
+ The class has a constructor that takes an instance of IAccountRepositoryPort as a parameter.
+ This dependency is injected using constructor injection.
+
+ The class has the following methods:
+ save: Saves the account information provided in the CreateAccountModel object.
+ getAccount: Retrieves the account information for the specified ID.
+
+ This class also uses the SLF4J logging framework to log information.
+
+ @see IAccountServicePort
+ @see IAccountRepositoryPort
+ @see CreateAccountModel
+ @see GetAccountModel
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
