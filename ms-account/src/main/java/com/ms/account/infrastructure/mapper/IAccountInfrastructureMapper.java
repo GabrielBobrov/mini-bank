@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface AccountInfrastructureMapper {
+public interface IAccountInfrastructureMapper {
     AccountEntity fromAccountModelToAccountEntity(CreateAccountModel createAccountModel);
 
     GetAccountModel fromAccountEntityTGetAccountModel(AccountEntity accountEntity);

@@ -25,7 +25,7 @@ class AccountServiceImplTest {
     private IAccountRepositoryPort accountRepositoryPort;
 
     @InjectMocks
-    private AccountServiceImpl accountServiceImpl;
+    private IAccountServiceServiceImpl accountServiceImpl;
 
     private CreateAccountModel createAccountModel;
 

@@ -6,7 +6,7 @@ import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.dummy.AccountDummy;
 import com.ms.account.infrastructure.entity.AccountEntity;
-import com.ms.account.infrastructure.mapper.AccountInfrastructureMapper;
+import com.ms.account.infrastructure.mapper.IAccountInfrastructureMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ class AccountRepositoryAdapterTest {
     private ISpringAccountRepositoryAdapter springAccountRepository;
 
     @Mock
-    private AccountInfrastructureMapper accountInfrastructureMapper;
+    private IAccountInfrastructureMapper IAccountInfrastructureMapper;
 
     @InjectMocks
     private AccountRepositoryAdapter accountRepositoryAdapter;
@@ -48,7 +48,7 @@ class AccountRepositoryAdapterTest {
 
     @Test
     void testSaveWhenValidAccountModelThenSaveAccountEntity() {
-        when(accountInfrastructureMapper.fromAccountModelToAccountEntity(mockCreateAccountModel)).thenReturn(mockAccountEntity);
+        when(IAccountInfrastructureMapper.fromAccountModelToAccountEntity(mockCreateAccountModel)).thenReturn(mockAccountEntity);
 
         accountRepositoryAdapter.save(mockCreateAccountModel);
 
@@ -65,7 +65,7 @@ class AccountRepositoryAdapterTest {
     @Test
     void testGetAccountWhenValidAccountIdThenReturnGetAccountModel() {
         when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.of(mockAccountEntity));
-        when(accountInfrastructureMapper.fromAccountEntityTGetAccountModel(mockAccountEntity)).thenReturn(mockGetAccountModel);
+        when(IAccountInfrastructureMapper.fromAccountEntityTGetAccountModel(mockAccountEntity)).thenReturn(mockGetAccountModel);
 
         GetAccountModel result = accountRepositoryAdapter.getAccount(mockAccountId);
 

@@ -2,7 +2,7 @@ package com.ms.account.entrypoint.rest.controller;
 
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
-import com.ms.account.core.ports.in.AccountPort;
+import com.ms.account.core.ports.in.service.IAccountServicePort;
 import com.ms.account.entrypoint.rest.UrlConstant;
 import com.ms.account.entrypoint.rest.assembler.AccountAssembler;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
@@ -28,7 +28,7 @@ import java.util.UUID;
 @RequestMapping(value = UrlConstant.ACCOUNT_URI)
 public class AccountController {
 
-    private final AccountPort accountPort;
+    private final IAccountServicePort IAccountServicePort;
     private final AccountEntrypointMapper accountEntrypointMapper;
     private final AccountAssembler accountAssembler;
 
@@ -40,7 +40,7 @@ public class AccountController {
 
         CreateAccountModel createAccountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
 
-        accountPort.save(createAccountModel);
+        IAccountServicePort.save(createAccountModel);
     }
 
     @GetMapping("{accountId}")
@@ -48,7 +48,7 @@ public class AccountController {
     public GetAccountResponseDTO getAccount(@PathVariable UUID accountId) {
         log.info("Class {} method getAccount", this.getClass().getName());
 
-        GetAccountModel account = accountPort.getAccount(accountId);
+        GetAccountModel account = IAccountServicePort.getAccount(accountId);
 
         GetAccountResponseDTO response = accountAssembler.toResponse(account);
         log.info("GetAccountResponseDTO {}", response);

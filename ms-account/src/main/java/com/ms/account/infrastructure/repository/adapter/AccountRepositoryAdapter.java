@@ -5,7 +5,7 @@ import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
 import com.ms.account.infrastructure.entity.AccountEntity;
-import com.ms.account.infrastructure.mapper.AccountInfrastructureMapper;
+import com.ms.account.infrastructure.mapper.IAccountInfrastructureMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class AccountRepositoryAdapter implements IAccountRepositoryPort {
 
     private final ISpringAccountRepositoryAdapter springAccountRepository;
-    private final AccountInfrastructureMapper accountInfrastructureMapper;
+    private final IAccountInfrastructureMapper accountInfrastructureMapper;
 
     @Override
     @Transactional
