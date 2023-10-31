@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class AccountRepositoryAdapterTest {
+class AccountRepositoryAdapterImplTest {
 
     @Mock
     private ISpringAccountRepositoryAdapter springAccountRepository;
@@ -31,7 +31,7 @@ class AccountRepositoryAdapterTest {
     private IAccountInfrastructureMapper IAccountInfrastructureMapper;
 
     @InjectMocks
-    private AccountRepositoryAdapter accountRepositoryAdapter;
+    private AccountRepositoryAdapterImpl accountRepositoryAdapterImpl;
 
     private CreateAccountModel mockCreateAccountModel;
     private AccountEntity mockAccountEntity;
@@ -50,14 +50,14 @@ class AccountRepositoryAdapterTest {
     void testSaveWhenValidAccountModelThenSaveAccountEntity() {
         when(IAccountInfrastructureMapper.fromAccountModelToAccountEntity(mockCreateAccountModel)).thenReturn(mockAccountEntity);
 
-        accountRepositoryAdapter.save(mockCreateAccountModel);
+        accountRepositoryAdapterImpl.save(mockCreateAccountModel);
 
         verify(springAccountRepository, times(1)).save(mockAccountEntity);
     }
 
     @Test
     void testSaveWhenNullAccountModelThenDoNotSaveAccountEntity() {
-        accountRepositoryAdapter.save(null);
+        accountRepositoryAdapterImpl.save(null);
 
         verify(springAccountRepository, times(0)).save(any(AccountEntity.class));
     }
@@ -67,7 +67,7 @@ class AccountRepositoryAdapterTest {
         when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.of(mockAccountEntity));
         when(IAccountInfrastructureMapper.fromAccountEntityTGetAccountModel(mockAccountEntity)).thenReturn(mockGetAccountModel);
 
-        GetAccountModel result = accountRepositoryAdapter.getAccount(mockAccountId);
+        GetAccountModel result = accountRepositoryAdapterImpl.getAccount(mockAccountId);
 
         assertEquals(mockGetAccountModel, result);
     }
@@ -76,6 +76,6 @@ class AccountRepositoryAdapterTest {
     void testGetAccountWhenInvalidAccountIdThenThrowNotFoundException() {
         when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, () -> accountRepositoryAdapter.getAccount(mockAccountId));
+        assertThrows(NotFoundException.class, () -> accountRepositoryAdapterImpl.getAccount(mockAccountId));
     }
 }

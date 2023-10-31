@@ -25,7 +25,7 @@ class AccountServiceImplTest {
     private IAccountRepositoryPort accountRepositoryPort;
 
     @InjectMocks
-    private IAccountServiceServiceImpl accountServiceImpl;
+    private AccountServiceAdapterImpl accountServiceAdapter;
 
     private CreateAccountModel createAccountModel;
 
@@ -39,7 +39,7 @@ class AccountServiceImplTest {
     void testSaveWhenValidAccountModelThenSaveAccount() {
         doNothing().when(accountRepositoryPort).save(createAccountModel);
 
-        accountServiceImpl.save(createAccountModel);
+        accountServiceAdapter.save(createAccountModel);
 
         verify(accountRepositoryPort, times(1)).save(createAccountModel);
     }
@@ -47,7 +47,7 @@ class AccountServiceImplTest {
     @Test
     @DisplayName("Test the 'save' method when a null account model is passed")
     void testSaveWhenNullAccountModelThenDoNothing() {
-        accountServiceImpl.save(null);
+        accountServiceAdapter.save(null);
 
         verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
     }
@@ -60,7 +60,7 @@ class AccountServiceImplTest {
 
         when(accountRepositoryPort.getAccount(uuid)).thenReturn(getAccountModel);
 
-        GetAccountModel result = accountServiceImpl.getAccount(uuid);
+        GetAccountModel result = accountServiceAdapter.getAccount(uuid);
 
         assertEquals(getAccountModel, result);
         verify(accountRepositoryPort, times(1)).getAccount(uuid);
@@ -73,7 +73,7 @@ class AccountServiceImplTest {
 
         when(accountRepositoryPort.getAccount(uuid)).thenReturn(null);
 
-        GetAccountModel result = accountServiceImpl.getAccount(uuid);
+        GetAccountModel result = accountServiceAdapter.getAccount(uuid);
 
         assertNull(result);
         verify(accountRepositoryPort, times(1)).getAccount(uuid);

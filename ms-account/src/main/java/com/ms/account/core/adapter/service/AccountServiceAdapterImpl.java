@@ -13,7 +13,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class IAccountServiceServiceImpl implements IAccountServicePort {
+public class AccountServiceAdapterImpl implements IAccountServicePort {
     private final IAccountRepositoryPort accountRepositoryPort;
 
     @Override

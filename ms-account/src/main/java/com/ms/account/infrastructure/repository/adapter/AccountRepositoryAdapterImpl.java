@@ -16,7 +16,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class AccountRepositoryAdapter implements IAccountRepositoryPort {
+public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
 
     private final ISpringAccountRepositoryAdapter springAccountRepository;
     private final IAccountInfrastructureMapper accountInfrastructureMapper;
