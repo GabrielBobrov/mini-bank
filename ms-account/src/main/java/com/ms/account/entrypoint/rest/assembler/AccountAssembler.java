@@ -2,7 +2,7 @@ package com.ms.account.entrypoint.rest.assembler;
 
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
-import com.ms.account.entrypoint.rest.mapper.AccountEntrypointMapper;
+import com.ms.account.entrypoint.rest.mapper.IAccountEntrypointMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class AccountAssembler {
-    private final AccountEntrypointMapper accountEntrypointMapper;
+    private final IAccountEntrypointMapper accountEntrypointMapper;
 
     public GetAccountResponseDTO toResponse(GetAccountModel getAccountModel) {
         log.info("Class {} method toResponse", this.getClass().getName());

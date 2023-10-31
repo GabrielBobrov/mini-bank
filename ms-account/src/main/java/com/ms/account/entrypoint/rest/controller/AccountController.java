@@ -7,7 +7,7 @@ import com.ms.account.entrypoint.rest.UrlConstant;
 import com.ms.account.entrypoint.rest.assembler.AccountAssembler;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
-import com.ms.account.entrypoint.rest.mapper.AccountEntrypointMapper;
+import com.ms.account.entrypoint.rest.mapper.IAccountEntrypointMapper;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,8 @@ import java.util.UUID;
 @RequestMapping(value = UrlConstant.ACCOUNT_URI)
 public class AccountController {
 
-    private final IAccountServicePort IAccountServicePort;
-    private final AccountEntrypointMapper accountEntrypointMapper;
+    private final IAccountServicePort accountServicePort;
+    private final IAccountEntrypointMapper accountEntrypointMapper;
     private final AccountAssembler accountAssembler;
 
     @PostMapping
@@ -40,7 +40,7 @@ public class AccountController {
 
         CreateAccountModel createAccountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
 
-        IAccountServicePort.save(createAccountModel);
+        accountServicePort.save(createAccountModel);
     }
 
     @GetMapping("{accountId}")
@@ -48,7 +48,7 @@ public class AccountController {
     public GetAccountResponseDTO getAccount(@PathVariable UUID accountId) {
         log.info("Class {} method getAccount", this.getClass().getName());
 
-        GetAccountModel account = IAccountServicePort.getAccount(accountId);
+        GetAccountModel account = accountServicePort.getAccount(accountId);
 
         GetAccountResponseDTO response = accountAssembler.toResponse(account);
         log.info("GetAccountResponseDTO {}", response);

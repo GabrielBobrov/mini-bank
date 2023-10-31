@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface AccountEntrypointMapper {
+public interface IAccountEntrypointMapper {
     CreateAccountModel fromCreateAccountRequestDTOToAccountModel(CreateAccountRequestDTO accountRequestDTO);
     GetAccountResponseDTO fromGetAccountModelToGetAccountResponseDTO(GetAccountModel getAccountModel);
 

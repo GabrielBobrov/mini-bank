@@ -9,7 +9,7 @@ import com.ms.account.entrypoint.rest.UrlConstant;
 import com.ms.account.entrypoint.rest.assembler.AccountAssembler;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
-import com.ms.account.entrypoint.rest.mapper.AccountEntrypointMapper;
+import com.ms.account.entrypoint.rest.mapper.IAccountEntrypointMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -22,7 +22,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,7 +41,7 @@ class AccountControllerTest {
     private IAccountServicePort IAccountServicePort;
 
     @MockBean
-    private AccountEntrypointMapper accountEntrypointMapper;
+    private IAccountEntrypointMapper accountEntrypointMapper;
 
     @MockBean
     private AccountAssembler accountAssembler;
