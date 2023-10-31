@@ -5,8 +5,6 @@ import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
 import com.ms.account.infrastructure.entity.AccountEntity;
-import org.junit.platform.engine.TestDescriptor;
-import org.junit.platform.engine.support.discovery.EngineDiscoveryRequestResolver;
 
 import java.util.UUID;
 
