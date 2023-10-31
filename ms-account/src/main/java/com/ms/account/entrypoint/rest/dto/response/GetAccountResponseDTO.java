@@ -24,4 +24,7 @@ public class GetAccountResponseDTO implements Serializable {
 
     private UUID id;
     private String firstName;
+    private String email;
+    private String document;
+    private String password;
 }
