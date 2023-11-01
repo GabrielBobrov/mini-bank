@@ -50,7 +50,7 @@ public class AccountController {
 
         GetAccountModel account = accountServicePort.getAccount(accountId);
 
-        GetAccountResponseDTO response = accountAssembler.toResponse(account);
+        GetAccountResponseDTO response = accountAssembler.toModel(account);
         log.info("GetAccountResponseDTO {}", response);
 
         return response;

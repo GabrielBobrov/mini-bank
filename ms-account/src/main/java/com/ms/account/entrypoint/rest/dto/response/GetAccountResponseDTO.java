@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,7 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class GetAccountResponseDTO implements Serializable {
+public class GetAccountResponseDTO extends RepresentationModel<GetAccountResponseDTO> implements Serializable {
     @Serial
     private static final long serialVersionUID = -2821698457681870221L;
 

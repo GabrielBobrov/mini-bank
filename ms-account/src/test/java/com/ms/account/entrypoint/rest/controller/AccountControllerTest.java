@@ -57,7 +57,7 @@ class AccountControllerTest {
                 .build();
 
         when(IAccountServicePort.getAccount(accountId)).thenReturn(getAccountModel);
-        when(accountAssembler.toResponse(getAccountModel)).thenReturn(responseDTO);
+        when(accountAssembler.toModel(getAccountModel)).thenReturn(responseDTO);
 
         mockMvc.perform(get(UrlConstant.ACCOUNT_URI + "/" + accountId))
                 .andExpect(status().isOk())
