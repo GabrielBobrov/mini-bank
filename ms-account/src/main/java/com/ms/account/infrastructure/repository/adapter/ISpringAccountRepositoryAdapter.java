@@ -9,4 +9,7 @@ import java.util.UUID;
 
 @Repository
 public interface ISpringAccountRepositoryAdapter extends JpaRepository<AccountEntity, UUID>, JpaSpecificationExecutor<AccountEntity> {
+
+    Boolean existsByDocumentOrEmail(String document, String email);
+
 }

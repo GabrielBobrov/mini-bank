@@ -1,5 +1,6 @@
 package com.ms.account.core.adapter.service;
 
+import com.ms.account.core.exception.AccountAlreadyExistsException;
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
@@ -20,8 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +38,61 @@ class AccountServiceAdapterImplTest {
     @BeforeEach
     public void setUp() {
         createAccountModel = AccountDummy.createAccountModelBuilder().build();
+    }
+
+    @Test
+    @DisplayName("Test the 'save' method when a valid account model is passed")
+    void testSaveWhenValidAccountModelThenSaveAccount() {
+        when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel)).thenReturn(false);
+
+        accountServiceAdapter.save(createAccountModel);
+
+        verify(accountRepositoryPort, times(1)).save(createAccountModel);
+    }
+
+    @Test
+    @DisplayName("Test the 'save' method when a null account model is passed")
+    void testSaveWhenNullAccountModelThenDoNothing() {
+        accountServiceAdapter.save(null);
+
+        verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
+    }
+
+    @Test
+    @DisplayName("Test the 'save' method when account already exists")
+    void testSaveWhenAccountAlreadyExistsThenThrowException() {
+        when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel)).thenReturn(true);
+
+        assertThrows(AccountAlreadyExistsException.class, () -> accountServiceAdapter.save(createAccountModel));
+
+        verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
+    }
+
+    @Test
+    @DisplayName("Test the 'getAccount' method when a valid UUID is passed")
+    void testGetAccountWhenValidUUIDThenReturnAccount() {
+        UUID uuid = UUID.randomUUID();
+        GetAccountModel getAccountModel = GetAccountModel.builder().id(uuid).build();
+
+        when(accountRepositoryPort.getAccount(uuid)).thenReturn(getAccountModel);
+
+        GetAccountModel result = accountServiceAdapter.getAccount(uuid);
+
+        assertEquals(getAccountModel, result);
+        verify(accountRepositoryPort, times(1)).getAccount(uuid);
+    }
+
+    @Test
+    @DisplayName("Test the 'getAccount' method when the repository returns null")
+    void testGetAccountWhenRepositoryReturnsNullThenReturnNull() {
+        UUID uuid = UUID.randomUUID();
+
+        when(accountRepositoryPort.getAccount(uuid)).thenReturn(null);
+
+        GetAccountModel result = accountServiceAdapter.getAccount(uuid);
+
+        assertNull(result);
+        verify(accountRepositoryPort, times(1)).getAccount(uuid);
     }
 
     @Test
@@ -81,50 +136,5 @@ class AccountServiceAdapterImplTest {
 
         assertEquals(expectedPage, result);
         verify(accountRepositoryPort, times(1)).getAccounts(accountFilter, null);
-    }
-
-    @Test
-    @DisplayName("Test the 'save' method when a valid account model is passed")
-    void testSaveWhenValidAccountModelThenSaveAccount() {
-        doNothing().when(accountRepositoryPort).save(createAccountModel);
-
-        accountServiceAdapter.save(createAccountModel);
-
-        verify(accountRepositoryPort, times(1)).save(createAccountModel);
-    }
-
-    @Test
-    @DisplayName("Test the 'save' method when a null account model is passed")
-    void testSaveWhenNullAccountModelThenDoNothing() {
-        accountServiceAdapter.save(null);
-
-        verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
-    }
-
-    @Test
-    @DisplayName("Test the 'getAccount' method when a valid UUID is passed")
-    void testGetAccountWhenValidUUIDThenReturnAccount() {
-        UUID uuid = UUID.randomUUID();
-        GetAccountModel getAccountModel = GetAccountModel.builder().id(uuid).build();
-
-        when(accountRepositoryPort.getAccount(uuid)).thenReturn(getAccountModel);
-
-        GetAccountModel result = accountServiceAdapter.getAccount(uuid);
-
-        assertEquals(getAccountModel, result);
-        verify(accountRepositoryPort, times(1)).getAccount(uuid);
-    }
-
-    @Test
-    @DisplayName("Test the 'getAccount' method when the repository returns null")
-    void testGetAccountWhenRepositoryReturnsNullThenReturnNull() {
-        UUID uuid = UUID.randomUUID();
-
-        when(accountRepositoryPort.getAccount(uuid)).thenReturn(null);
-
-        GetAccountModel result = accountServiceAdapter.getAccount(uuid);
-
-        assertNull(result);
-        verify(accountRepositoryPort, times(1)).getAccount(uuid);
     }
 }

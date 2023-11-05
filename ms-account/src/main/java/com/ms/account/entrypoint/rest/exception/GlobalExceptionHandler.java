@@ -4,6 +4,7 @@ package com.ms.account.entrypoint.rest.exception;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import com.ms.account.core.exception.AccountAlreadyExistsException;
 import com.ms.account.core.exception.NotFoundException;
 import com.ms.account.entrypoint.rest.exception.model.Problem;
 import com.ms.account.entrypoint.rest.exception.model.enums.ProblemType;
@@ -54,6 +55,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		HttpStatus status = HttpStatus.NOT_FOUND;
 		ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
+		String detail = ex.getMessage();
+
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
+				.build();
+
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler({AccountAlreadyExistsException.class})
+	public ResponseEntity<Object> handleAccountAlreadyExistsException(RuntimeException ex, WebRequest request) {
+
+		HttpStatus status = HttpStatus.CONFLICT;
+		ProblemType problemType = ProblemType.BUSINESS_ERROR;
 		String detail = ex.getMessage();
 
 		Problem problem = createProblemBuilder(status, problemType, detail)

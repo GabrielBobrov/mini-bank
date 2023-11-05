@@ -7,10 +7,8 @@ import com.ms.account.dummy.AccountDummy;
 import com.ms.account.infrastructure.entity.AccountEntity;
 import com.ms.account.infrastructure.filter.AccountFilter;
 import com.ms.account.infrastructure.mapper.IAccountInfrastructureMapper;
-import com.ms.account.infrastructure.specs.AccountSpecs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,11 +23,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class AccountRepositoryAdapterImplTest {
@@ -104,4 +98,12 @@ class AccountRepositoryAdapterImplTest {
         assertEquals(mockGetAccountModel, result.getContent().get(0));
     }
 
+    @Test
+    void testExistsByDocumentOrEmailWhenValidAccountModelThenReturnBoolean() {
+        when(springAccountRepository.existsByDocumentOrEmail(mockCreateAccountModel.getDocument(), mockCreateAccountModel.getEmail())).thenReturn(true);
+
+        Boolean result = accountRepositoryAdapterImpl.existsByDocumentOrEmail(mockCreateAccountModel);
+
+        assertEquals(true, result);
+    }
 }

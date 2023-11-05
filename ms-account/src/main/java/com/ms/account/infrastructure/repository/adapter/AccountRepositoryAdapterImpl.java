@@ -113,6 +113,19 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
         return new PageImpl<>(getAccountModels, pageable, accounts.getTotalElements());
     }
 
+    /**
+     * Checks if a user exists based on the provided document or email.
+     *
+     * @param createAccountModel The CreateAccountModel object containing the document and email to be checked.
+     * @return true if a user exists with the provided document or email, false otherwise.
+     */
+    @Override
+    public Boolean existsByDocumentOrEmail(CreateAccountModel createAccountModel) {
+        log.info("Class {} method existsByDocumentOrEmail", this.getClass().getName());
+
+        return springAccountRepository.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail());
+    }
+
     private Pageable translatePageable(Pageable apiPageable) {
         var mapping = Map.of(
                 "firstName", "firstName",
