@@ -4,8 +4,11 @@ import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.core.ports.in.service.IAccountServicePort;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
+import com.ms.account.infrastructure.filter.AccountFilter;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -49,5 +52,12 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
         log.info("Class {} method getAccount", this.getClass().getName());
 
         return accountRepositoryPort.getAccount(id);
+    }
+
+    @Override
+    public Page<GetAccountModel> getAccounts(AccountFilter accountFilter, Pageable pageable) {
+        log.info("Class {} method getAccounts", this.getClass().getName());
+
+        return accountRepositoryPort.getAccounts(accountFilter, pageable);
     }
 }

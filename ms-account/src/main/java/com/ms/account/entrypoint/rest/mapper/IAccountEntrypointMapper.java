@@ -8,10 +8,14 @@ import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IAccountEntrypointMapper {
     CreateAccountModel fromCreateAccountRequestDTOToAccountModel(CreateAccountRequestDTO accountRequestDTO);
+
     GetAccountResponseDTO fromGetAccountModelToGetAccountResponseDTO(GetAccountModel getAccountModel);
 
+    List<GetAccountResponseDTO> fromListGetAccountModelToListGetAccountResponseDTO(List<GetAccountModel> getAccountModel);
 
 }

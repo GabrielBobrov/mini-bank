@@ -10,18 +10,28 @@ import com.ms.account.entrypoint.rest.assembler.AccountAssembler;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
 import com.ms.account.entrypoint.rest.mapper.IAccountEntrypointMapper;
+import com.ms.account.infrastructure.filter.AccountFilter;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,6 +55,29 @@ class AccountControllerTest {
 
     @MockBean
     private AccountAssembler accountAssembler;
+
+    @MockBean
+    private PagedResourcesAssembler<GetAccountModel> pagedResourcesAssembler;
+
+    @Test
+    void testGetAccountsWhenValidFilterAndPageableThenReturnAccounts() throws Exception {
+        GetAccountModel getAccountModel = AccountDummy.getAccountModelBuilder().build();
+        Page<GetAccountModel> page = new PageImpl<>(Collections.singletonList(getAccountModel));
+
+        when(IAccountServicePort.getAccounts(any(), any())).thenReturn(page);
+
+        mockMvc.perform(get(UrlConstant.ACCOUNT_URI + "?firstName=Laura&page=0&size=10"))
+                .andExpect(status().isOk());
+
+        verify(IAccountServicePort).getAccounts(any(), (any()));
+    }
+
+    @Test
+    void testGetAccountsWhenInvalidFilterThenReturnBadRequest() throws Exception {
+        mockMvc.perform(get(UrlConstant.ACCOUNT_URI)
+                        .param("type", "INVALID"))
+                .andExpect(status().isBadRequest());
+    }
 
     @Test
     void testGetAccountWhenValidAccountIdThenReturnAccount() throws Exception {

@@ -4,13 +4,24 @@ import com.ms.account.core.exception.NotFoundException;
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
+import com.ms.account.infrastructure.data.PageableTranslator;
 import com.ms.account.infrastructure.entity.AccountEntity;
+import com.ms.account.infrastructure.filter.AccountFilter;
 import com.ms.account.infrastructure.mapper.IAccountInfrastructureMapper;
+import com.ms.account.infrastructure.specs.AccountSpecs;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -77,8 +88,40 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
                 .orElseThrow(() -> new NotFoundException("Conta não encontrada com id " + id));
         log.info("AccountEntity {}", accountEntity);
 
-        GetAccountModel getAccountModel = accountInfrastructureMapper.fromAccountEntityTGetAccountModel(accountEntity);
+        GetAccountModel getAccountModel = accountInfrastructureMapper.fromAccountEntityToGetAccountModel(accountEntity);
         log.info("GetAccountModel {}", getAccountModel);
         return getAccountModel;
+    }
+
+
+    /**
+     * Retrieves the account information based on the provided filter and pagination configuration.
+     *
+     * @param accountFilter The filter to apply when retrieving the accounts.
+     * @param pageable      The pagination configuration.
+     * @return A Page of GetAccountModel objects containing the retrieved account information.
+     */
+    @Override
+    public Page<GetAccountModel> getAccounts(AccountFilter accountFilter, Pageable pageable) {
+        log.info("Class {} method getAccounts", this.getClass().getName());
+
+        pageable = translatePageable(pageable);
+        Specification<AccountEntity> accountEntitySpecification = AccountSpecs.usingFilter(accountFilter);
+        Page<AccountEntity> accounts = springAccountRepository.findAll(accountEntitySpecification, pageable);
+
+        List<GetAccountModel> getAccountModels = accountInfrastructureMapper.fromListAccountEntityToListGetAccountModel(accounts.getContent());
+        return new PageImpl<>(getAccountModels, pageable, accounts.getTotalElements());
+    }
+
+    private Pageable translatePageable(Pageable apiPageable) {
+        var mapping = Map.of(
+                "firstName", "firstName",
+                "email", "email",
+                "document", "document",
+                "password", "password",
+                "type", "type"
+        );
+
+        return PageableTranslator.translate(apiPageable, mapping);
     }
 }

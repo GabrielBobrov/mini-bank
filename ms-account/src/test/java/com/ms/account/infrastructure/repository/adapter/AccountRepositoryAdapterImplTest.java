@@ -1,4 +1,3 @@
-
 package com.ms.account.infrastructure.repository.adapter;
 
 import com.ms.account.core.exception.NotFoundException;
@@ -6,31 +5,42 @@ import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.dummy.AccountDummy;
 import com.ms.account.infrastructure.entity.AccountEntity;
+import com.ms.account.infrastructure.filter.AccountFilter;
 import com.ms.account.infrastructure.mapper.IAccountInfrastructureMapper;
+import com.ms.account.infrastructure.specs.AccountSpecs;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class AccountRepositoryAdapterImplTest {
 
-    @Mock
+    @MockBean
     private ISpringAccountRepositoryAdapter springAccountRepository;
 
-    @Mock
+    @MockBean
     private IAccountInfrastructureMapper IAccountInfrastructureMapper;
 
-    @InjectMocks
+    @Autowired
     private AccountRepositoryAdapterImpl accountRepositoryAdapterImpl;
 
     private CreateAccountModel mockCreateAccountModel;
@@ -65,7 +75,7 @@ class AccountRepositoryAdapterImplTest {
     @Test
     void testGetAccountWhenValidAccountIdThenReturnGetAccountModel() {
         when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.of(mockAccountEntity));
-        when(IAccountInfrastructureMapper.fromAccountEntityTGetAccountModel(mockAccountEntity)).thenReturn(mockGetAccountModel);
+        when(IAccountInfrastructureMapper.fromAccountEntityToGetAccountModel(mockAccountEntity)).thenReturn(mockGetAccountModel);
 
         GetAccountModel result = accountRepositoryAdapterImpl.getAccount(mockAccountId);
 
@@ -78,4 +88,20 @@ class AccountRepositoryAdapterImplTest {
 
         assertThrows(NotFoundException.class, () -> accountRepositoryAdapterImpl.getAccount(mockAccountId));
     }
+
+    @Test
+    void testGetAccountsWhenValidFilterAndPageableThenReturnPageOfGetAccountModels() {
+        AccountFilter mockFilter = new AccountFilter();
+        Pageable mockPageable = Pageable.ofSize(2);
+        Page<AccountEntity> mockPage = new PageImpl<>(Collections.singletonList(mockAccountEntity));
+
+        when(springAccountRepository.findAll(any(Specification.class), eq(mockPageable))).thenReturn(mockPage);
+        when(IAccountInfrastructureMapper.fromListAccountEntityToListGetAccountModel(mockPage.getContent())).thenReturn(Collections.singletonList(mockGetAccountModel));
+
+        Page<GetAccountModel> result = accountRepositoryAdapterImpl.getAccounts(mockFilter, mockPageable);
+
+        assertEquals(1, result.getContent().size());
+        assertEquals(mockGetAccountModel, result.getContent().get(0));
+    }
+
 }

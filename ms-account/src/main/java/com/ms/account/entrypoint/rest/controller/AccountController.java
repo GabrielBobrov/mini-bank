@@ -8,9 +8,15 @@ import com.ms.account.entrypoint.rest.assembler.AccountAssembler;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
 import com.ms.account.entrypoint.rest.mapper.IAccountEntrypointMapper;
+import com.ms.account.infrastructure.filter.AccountFilter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +37,8 @@ public class AccountController {
     private final IAccountServicePort accountServicePort;
     private final IAccountEntrypointMapper accountEntrypointMapper;
     private final AccountAssembler accountAssembler;
+    private final PagedResourcesAssembler<GetAccountModel> getAccountModelPagedResourcesAssembler;
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -54,6 +62,19 @@ public class AccountController {
         log.info("GetAccountResponseDTO {}", response);
 
         return response;
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public PagedModel<GetAccountResponseDTO> getAccounts(@Valid AccountFilter accountFilter,
+                                                         @PageableDefault Pageable pageable) {
+        log.info("Class {} method getAccounts", this.getClass().getName());
+
+        Page<GetAccountModel> accounts = accountServicePort.getAccounts(accountFilter, pageable);
+        PagedModel<GetAccountResponseDTO> responseDTOS = getAccountModelPagedResourcesAssembler.toModel(accounts, accountAssembler);
+        log.info("PagedModel<GetAccountResponseDTO> {}", responseDTOS);
+
+        return responseDTOS;
     }
 }
 
