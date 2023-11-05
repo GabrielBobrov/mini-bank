@@ -109,6 +109,10 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
         Specification<AccountEntity> accountEntitySpecification = AccountSpecs.usingFilter(accountFilter);
         Page<AccountEntity> accounts = springAccountRepository.findAll(accountEntitySpecification, pageable);
 
+        if (accounts.isEmpty())
+            throw new NotFoundException("Nenhuma conta encontrada");
+
+
         List<GetAccountModel> getAccountModels = accountInfrastructureMapper.fromListAccountEntityToListGetAccountModel(accounts.getContent());
         return new PageImpl<>(getAccountModels, pageable, accounts.getTotalElements());
     }

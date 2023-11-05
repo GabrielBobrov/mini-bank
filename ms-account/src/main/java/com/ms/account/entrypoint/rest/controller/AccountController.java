@@ -8,6 +8,7 @@ import com.ms.account.entrypoint.rest.assembler.AccountAssembler;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
 import com.ms.account.entrypoint.rest.mapper.IAccountEntrypointMapper;
+import com.ms.account.entrypoint.rest.openapi.controller.AccountControllerOpenApi;
 import com.ms.account.infrastructure.filter.AccountFilter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,7 @@ import java.util.UUID;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = UrlConstant.ACCOUNT_URI)
-public class AccountController {
+public class AccountController implements AccountControllerOpenApi {
 
     private final IAccountServicePort accountServicePort;
     private final IAccountEntrypointMapper accountEntrypointMapper;
@@ -43,7 +44,7 @@ public class AccountController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createAccount(@RequestBody @Valid CreateAccountRequestDTO accountRequestDTO) {
-        log.info("Class {} method save", this.getClass().getName());
+        log.info("Class {} method createAccount", this.getClass().getName());
         log.info("CreateAccountRequestDTO {}", accountRequestDTO);
 
         CreateAccountModel createAccountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
