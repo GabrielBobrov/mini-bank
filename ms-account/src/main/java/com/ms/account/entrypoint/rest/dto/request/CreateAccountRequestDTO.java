@@ -7,10 +7,12 @@ import com.ms.account.infrastructure.entity.enums.AccountType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CNPJ;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.io.Serial;
@@ -34,7 +36,7 @@ public class CreateAccountRequestDTO  implements Serializable {
     @NotBlank
     private String email;
 
-    @CPF
+    @Pattern(regexp = "^\\d{11}|\\d{14}$", message = "Documento está com formato inválido, informe o CPF ou CNPJ corretamente")
     @NotBlank
     private String document;
 
