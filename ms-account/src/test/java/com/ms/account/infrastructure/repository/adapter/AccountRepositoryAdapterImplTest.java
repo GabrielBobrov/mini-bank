@@ -102,7 +102,7 @@ class AccountRepositoryAdapterImplTest {
     void testExistsByDocumentOrEmailWhenValidAccountModelThenReturnBoolean() {
         when(springAccountRepository.existsByDocumentOrEmail(mockCreateAccountModel.getDocument(), mockCreateAccountModel.getEmail())).thenReturn(true);
 
-        Boolean result = accountRepositoryAdapterImpl.existsByDocumentOrEmail(mockCreateAccountModel);
+        Boolean result = accountRepositoryAdapterImpl.existsByDocumentOrEmail(mockCreateAccountModel.getDocument(), mockCreateAccountModel.getEmail());
 
         assertEquals(true, result);
     }

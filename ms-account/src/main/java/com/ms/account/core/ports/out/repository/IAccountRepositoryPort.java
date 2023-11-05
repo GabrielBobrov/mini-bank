@@ -16,7 +16,7 @@ public interface IAccountRepositoryPort {
 
     Page<GetAccountModel> getAccounts(AccountFilter accountFilter, Pageable pageable);
 
-    Boolean existsByDocumentOrEmail(CreateAccountModel createAccountModel);
+    Boolean existsByDocumentOrEmail(String document, String email);
 
 
 }

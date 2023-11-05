@@ -116,14 +116,15 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
     /**
      * Checks if a user exists based on the provided document or email.
      *
-     * @param createAccountModel The CreateAccountModel object containing the document and email to be checked.
-     * @return true if a user exists with the provided document or email, false otherwise.
+     * @param document The document to check.
+     * @param email The email to check.
+     * @return {@code true} if a user exists with the provided document or email, {@code false} otherwise.
      */
     @Override
-    public Boolean existsByDocumentOrEmail(CreateAccountModel createAccountModel) {
+    public Boolean existsByDocumentOrEmail(String document, String email) {
         log.info("Class {} method existsByDocumentOrEmail", this.getClass().getName());
 
-        return springAccountRepository.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail());
+        return springAccountRepository.existsByDocumentOrEmail(document, email);
     }
 
     private Pageable translatePageable(Pageable apiPageable) {

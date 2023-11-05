@@ -46,7 +46,7 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
         log.info("Class {} method save", this.getClass().getName());
         log.info("AccountModel {}", createAccountModel);
 
-        Boolean accountAlreadyExists = accountRepositoryPort.existsByDocumentOrEmail(createAccountModel);
+        Boolean accountAlreadyExists = accountRepositoryPort.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail());
 
         if (Objects.equals(Boolean.TRUE, accountAlreadyExists))
             throw new AccountAlreadyExistsException("Usuário com mesmo documento ou email já existe");

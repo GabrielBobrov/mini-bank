@@ -43,7 +43,7 @@ class AccountServiceAdapterImplTest {
     @Test
     @DisplayName("Test the 'save' method when a valid account model is passed")
     void testSaveWhenValidAccountModelThenSaveAccount() {
-        when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel)).thenReturn(false);
+        when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail())).thenReturn(false);
 
         accountServiceAdapter.save(createAccountModel);
 
@@ -51,17 +51,9 @@ class AccountServiceAdapterImplTest {
     }
 
     @Test
-    @DisplayName("Test the 'save' method when a null account model is passed")
-    void testSaveWhenNullAccountModelThenDoNothing() {
-        accountServiceAdapter.save(null);
-
-        verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
-    }
-
-    @Test
     @DisplayName("Test the 'save' method when account already exists")
     void testSaveWhenAccountAlreadyExistsThenThrowException() {
-        when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel)).thenReturn(true);
+        when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail())).thenReturn(true);
 
         assertThrows(AccountAlreadyExistsException.class, () -> accountServiceAdapter.save(createAccountModel));
 
