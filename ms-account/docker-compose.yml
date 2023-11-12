@@ -1,0 +1,37 @@
+version: "3.9"
+
+networks:
+  minibank-network:
+    driver: bridge
+
+services:
+  minibank-mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: "gabriel1234"
+    ports:
+      - "3316:3306"
+    networks:
+      - minibank-network
+
+  ms-account:
+    image: gabrielbobrov2/ms-account
+    environment:
+      DB_HOST: minibank-mysql
+    ports:
+      - "8080:8080"
+    networks:
+      - minibank-network
+    depends_on:
+      - minibank-mysql
+
+#  ms-account-proxy:
+#    build: ./nginx
+#    image: ms-account-proxy
+#    ports:
+#      - "80:80"
+#    networks:
+#      - minibank-network
+#    depends_on:
+#      - ms-account
