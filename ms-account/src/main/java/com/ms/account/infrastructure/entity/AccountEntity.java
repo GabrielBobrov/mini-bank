@@ -16,6 +16,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -47,6 +48,9 @@ public class AccountEntity {
     @Column(name = "type")
     @Enumerated(EnumType.STRING)
     private AccountType type;
+
+    @Column(name = "balance")
+    private BigDecimal balance;
 
     @CreationTimestamp
     @Column(name = "created_at")

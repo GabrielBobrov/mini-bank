@@ -20,6 +20,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -68,6 +69,7 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
         log.info("AccountModel {}", createAccountModel);
 
         AccountEntity accountEntity = accountInfrastructureMapper.fromAccountModelToAccountEntity(createAccountModel);
+        accountEntity.setBalance(BigDecimal.ZERO);
         log.info("AccountEntity {}", accountEntity);
 
         springAccountRepository.save(accountEntity);
