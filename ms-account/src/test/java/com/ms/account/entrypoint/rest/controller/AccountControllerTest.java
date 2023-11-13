@@ -10,18 +10,13 @@ import com.ms.account.entrypoint.rest.assembler.AccountAssembler;
 import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
 import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
 import com.ms.account.entrypoint.rest.mapper.IAccountEntrypointMapper;
-import com.ms.account.infrastructure.filter.AccountFilter;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -135,7 +130,7 @@ class AccountControllerTest {
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated());
 
-        verify(IAccountServicePort).save(createAccountModel);
+        verify(IAccountServicePort).createAccount(createAccountModel);
     }
 
     @Test

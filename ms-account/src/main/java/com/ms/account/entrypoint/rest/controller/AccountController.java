@@ -49,7 +49,7 @@ public class AccountController implements AccountControllerOpenApi {
 
         CreateAccountModel createAccountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
 
-        accountServicePort.save(createAccountModel);
+        accountServicePort.createAccount(createAccountModel);
     }
 
     @GetMapping("{accountId}")

@@ -42,7 +42,7 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
     private final IAccountRepositoryPort accountRepositoryPort;
 
     @Override
-    public void save(CreateAccountModel createAccountModel) {
+    public void createAccount(CreateAccountModel createAccountModel) {
         log.info("Class {} method save", this.getClass().getName());
         log.info("AccountModel {}", createAccountModel);
 
@@ -51,7 +51,7 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
         if (Objects.equals(Boolean.TRUE, accountAlreadyExists))
             throw new AccountAlreadyExistsException("Usuário com mesmo documento ou email já existe");
 
-        accountRepositoryPort.save(createAccountModel);
+        accountRepositoryPort.create(createAccountModel);
     }
 
     @Override

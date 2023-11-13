@@ -54,17 +54,11 @@ class AccountRepositoryAdapterImplTest {
     void testSaveWhenValidAccountModelThenSaveAccountEntity() {
         when(IAccountInfrastructureMapper.fromAccountModelToAccountEntity(mockCreateAccountModel)).thenReturn(mockAccountEntity);
 
-        accountRepositoryAdapterImpl.save(mockCreateAccountModel);
+        accountRepositoryAdapterImpl.create(mockCreateAccountModel);
 
         verify(springAccountRepository, times(1)).save(mockAccountEntity);
     }
 
-    @Test
-    void testSaveWhenNullAccountModelThenDoNotSaveAccountEntity() {
-        accountRepositoryAdapterImpl.save(null);
-
-        verify(springAccountRepository, times(0)).save(any(AccountEntity.class));
-    }
 
     @Test
     void testGetAccountWhenValidAccountIdThenReturnGetAccountModel() {

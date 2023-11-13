@@ -45,9 +45,9 @@ class AccountServiceAdapterImplTest {
     void testSaveWhenValidAccountModelThenSaveAccount() {
         when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail())).thenReturn(false);
 
-        accountServiceAdapter.save(createAccountModel);
+        accountServiceAdapter.createAccount(createAccountModel);
 
-        verify(accountRepositoryPort, times(1)).save(createAccountModel);
+        verify(accountRepositoryPort, times(1)).create(createAccountModel);
     }
 
     @Test
@@ -55,9 +55,9 @@ class AccountServiceAdapterImplTest {
     void testSaveWhenAccountAlreadyExistsThenThrowException() {
         when(accountRepositoryPort.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail())).thenReturn(true);
 
-        assertThrows(AccountAlreadyExistsException.class, () -> accountServiceAdapter.save(createAccountModel));
+        assertThrows(AccountAlreadyExistsException.class, () -> accountServiceAdapter.createAccount(createAccountModel));
 
-        verify(accountRepositoryPort, times(0)).save(any(CreateAccountModel.class));
+        verify(accountRepositoryPort, times(0)).create(any(CreateAccountModel.class));
     }
 
     @Test

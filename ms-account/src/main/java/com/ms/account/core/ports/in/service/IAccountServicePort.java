@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface IAccountServicePort {
 
-    void save(CreateAccountModel createAccountModel);
+    void createAccount(CreateAccountModel createAccountModel);
 
     GetAccountModel getAccount(UUID id);
 
