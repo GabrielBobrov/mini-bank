@@ -47,7 +47,7 @@ public class AccountController implements AccountControllerOpenApi {
         log.info("Class {} method createAccount", this.getClass().getName());
         log.info("CreateAccountRequestDTO {}", accountRequestDTO);
 
-        CreateAccountModel createAccountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(accountRequestDTO);
+        CreateAccountModel createAccountModel = accountEntrypointMapper.fromCreateAccountRequestDTOToCreateAccountModel(accountRequestDTO);
 
         accountServicePort.createAccount(createAccountModel);
     }

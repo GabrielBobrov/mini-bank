@@ -65,7 +65,7 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
     @Override
     @Transactional
     public void create(CreateAccountModel createAccountModel) {
-        log.info("Class {} method save", this.getClass().getName());
+        log.info("Class {} method create", this.getClass().getName());
         log.info("CreateAccountModel {}", createAccountModel);
 
         AccountEntity accountEntity = accountInfrastructureMapper.fromAccountModelToAccountEntity(createAccountModel);

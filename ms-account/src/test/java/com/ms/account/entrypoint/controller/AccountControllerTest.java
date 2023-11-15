@@ -123,7 +123,7 @@ class AccountControllerTest {
         CreateAccountRequestDTO requestDTO = AccountDummy.createAccountRequestDTOBuilder().build();
         CreateAccountModel createAccountModel = AccountDummy.createAccountModelBuilder().build();
 
-        when(accountEntrypointMapper.fromCreateAccountRequestDTOToAccountModel(requestDTO)).thenReturn(createAccountModel);
+        when(accountEntrypointMapper.fromCreateAccountRequestDTOToCreateAccountModel(requestDTO)).thenReturn(createAccountModel);
 
         mockMvc.perform(MockMvcRequestBuilders.post(UrlConstant.ACCOUNT_URI)
                         .contentType(MediaType.APPLICATION_JSON)
