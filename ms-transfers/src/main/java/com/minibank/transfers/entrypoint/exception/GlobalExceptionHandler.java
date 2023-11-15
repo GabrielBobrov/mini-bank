@@ -4,6 +4,7 @@ package com.minibank.transfers.entrypoint.exception;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import com.minibank.transfers.core.exception.InvalidPayerTypeException;
 import com.minibank.transfers.core.exception.NotFoundException;
 import com.minibank.transfers.entrypoint.exception.model.Problem;
 import com.minibank.transfers.entrypoint.exception.model.enums.ProblemType;
@@ -47,6 +48,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	public GlobalExceptionHandler(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	@ExceptionHandler(InvalidPayerTypeException.class)
+	public ResponseEntity<Object> handleInvalidPayerTypeException(InvalidPayerTypeException ex, WebRequest request) {
+
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		ProblemType problemType = ProblemType.BUSINESS_ERROR;
+		String detail = ex.getMessage();
+
+		Problem problem = createProblemBuilder(status, problemType, detail)
+				.userMessage(detail)
+				.build();
+
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 	}
 
 	@ExceptionHandler({NotFoundException.class})
