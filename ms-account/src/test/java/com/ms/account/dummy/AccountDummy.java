@@ -3,8 +3,8 @@ package com.ms.account.dummy;
 import com.github.javafaker.Faker;
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
-import com.ms.account.entrypoint.rest.dto.request.CreateAccountRequestDTO;
-import com.ms.account.entrypoint.rest.dto.response.GetAccountResponseDTO;
+import com.ms.account.entrypoint.dto.request.CreateAccountRequestDTO;
+import com.ms.account.entrypoint.dto.response.GetAccountResponseDTO;
 import com.ms.account.infrastructure.entity.AccountEntity;
 import com.ms.account.infrastructure.entity.enums.AccountType;
 

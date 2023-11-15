@@ -1,2 +1,4 @@
 server:
-  port: 8080
+  port: 8081
+account:
+  host: ${ACCOUNT_HOST:http://localhost:8080}
