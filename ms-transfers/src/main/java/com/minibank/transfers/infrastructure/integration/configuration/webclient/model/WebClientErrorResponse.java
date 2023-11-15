@@ -23,5 +23,7 @@ import java.io.Serializable;
 public class WebClientErrorResponse implements Serializable {
     @Serial
     private static final long serialVersionUID = -1014649972014841902L;
-    private String message;
+    private String userMessage;
+    private String title;
+    private String type;
 }

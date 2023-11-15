@@ -53,10 +53,10 @@ public class WebClientConfiguration {
             .baseUrl(url)
             .defaultStatusHandler(HttpStatusCode::isError, resp -> resp.bodyToMono(WebClientErrorResponse.class)
                 .flatMap(body -> {
-                    var message = body.getMessage();
+                    var message = body.getUserMessage();
                     var value   = resp.statusCode().value();
                     log.error("message: {}, value {}", message, value);
-                    return Mono.error(new NotificationException(message, value));
+                    return Mono.error(new NotificationException(message, value, body.getTitle(), body.getType()));
                 }))
            .build();
 

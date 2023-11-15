@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import com.minibank.transfers.core.exception.InvalidPayerTypeException;
 import com.minibank.transfers.core.exception.NotFoundException;
+import com.minibank.transfers.core.exception.NotificationException;
 import com.minibank.transfers.entrypoint.exception.model.Problem;
 import com.minibank.transfers.entrypoint.exception.model.enums.ProblemType;
 import lombok.extern.slf4j.Slf4j;
@@ -40,293 +41,311 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	public static final String MSG_ERRO_GENERICA_USUARIO_FINAL
-			= "Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
-			+ "o problema persistir, entre em contato com o administrador do sistema.";
+    public static final String MSG_ERRO_GENERICA_USUARIO_FINAL
+            = "Ocorreu um erro interno inesperado no sistema. Tente novamente e se "
+            + "o problema persistir, entre em contato com o administrador do sistema.";
 
-	private final MessageSource messageSource;
+    private final MessageSource messageSource;
 
-	public GlobalExceptionHandler(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
+    public GlobalExceptionHandler(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
-	@ExceptionHandler(InvalidPayerTypeException.class)
-	public ResponseEntity<Object> handleInvalidPayerTypeException(InvalidPayerTypeException ex, WebRequest request) {
+    @ExceptionHandler(NotificationException.class)
+    public ResponseEntity<Object> handleNotificationException(NotificationException ex, WebRequest request) {
 
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		ProblemType problemType = ProblemType.BUSINESS_ERROR;
-		String detail = ex.getMessage();
+        HttpStatus status = HttpStatus.valueOf(ex.getValue());
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.build();
+        String detail = ex.getUserMessage();
+        Problem problem = Problem.builder()
+                .timestamp(OffsetDateTime.now())
+                .status(status.value())
+                .type(ex.getType())
+                .title(ex.getTitle())
+                .detail(detail)
+                .userMessage(detail)
+                .build();
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-	}
+        return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
 
-	@ExceptionHandler({NotFoundException.class})
-	public ResponseEntity<Object> handleBusiness(RuntimeException ex, WebRequest request) {
+    @ExceptionHandler(InvalidPayerTypeException.class)
+    public ResponseEntity<Object> handleInvalidPayerTypeException(InvalidPayerTypeException ex, WebRequest request) {
 
-		HttpStatus status = HttpStatus.NOT_FOUND;
-		ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
-		String detail = ex.getMessage();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemType problemType = ProblemType.BUSINESS_ERROR;
+        String detail = ex.getMessage();
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-	}
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
 
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
+    @ExceptionHandler({NotFoundException.class})
+    public ResponseEntity<Object> handleBusiness(RuntimeException ex, WebRequest request) {
 
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		ProblemType problemType = ProblemType.INVALID_DATA;
-		String detail = ex.getMessage();
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
+        String detail = ex.getMessage();
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-	}
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
 
-	@Override
-	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgument(IllegalArgumentException ex, WebRequest request) {
 
-		ProblemType problemType = ProblemType.INVALID_PARAMETER;
-		String detail = String.format("O parâmetro de URL '%s' é obrigatório", ex.getParameterName());
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemType problemType = ProblemType.INVALID_DATA;
+        String detail = ex.getMessage();
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
 
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
 
-	@ExceptionHandler(InvalidDataAccessApiUsageException.class)
-	public ResponseEntity<Object> handleInvalidDataAccessApiUsage(InvalidDataAccessApiUsageException ex, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		ProblemType problemType = ProblemType.INVALID_DATA;
-		String detail = ex.getMessage();
+        ProblemType problemType = ProblemType.INVALID_PARAMETER;
+        String detail = String.format("O parâmetro de URL '%s' é obrigatório", ex.getParameterName());
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-	}
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
 
-	@ExceptionHandler(NoSuchElementException.class)
-	public ResponseEntity<Object> handleNoSuchElement(NoSuchElementException ex, WebRequest request) {
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ResponseEntity<Object> handleInvalidDataAccessApiUsage(InvalidDataAccessApiUsageException ex, WebRequest request) {
 
-		HttpStatus status = HttpStatus.BAD_REQUEST;
-		ProblemType problemType = ProblemType.BUSINESS_ERROR;
-		String detail = ex.getMessage();
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemType problemType = ProblemType.INVALID_DATA;
+        String detail = ex.getMessage();
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-	}
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
 
-	@Override
-	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
-																	  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		return ResponseEntity.status(status).headers(headers).build();
-	}
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Object> handleNoSuchElement(NoSuchElementException ex, WebRequest request) {
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-																  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemType problemType = ProblemType.BUSINESS_ERROR;
+        String detail = ex.getMessage();
 
-		return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
-	}
-
-	private ResponseEntity<Object> handleValidationInternal(Exception ex, HttpHeaders headers,
-															HttpStatusCode status, WebRequest request, BindingResult bindingResult) {
-		ProblemType problemType = ProblemType.INVALID_DATA;
-		String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
 
-		List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
-				.map(objectError -> {
-					String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
 
-					String name = objectError.getObjectName();
+    @Override
+    protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
+                                                                      HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        return ResponseEntity.status(status).headers(headers).build();
+    }
 
-					if (objectError instanceof FieldError) {
-						name = ((FieldError) objectError).getField();
-					}
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
-					return Problem.Object.builder()
-							.name(name)
-							.userMessage(message)
-							.build();
-				})
-				.toList();
+        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+    }
+
+    private ResponseEntity<Object> handleValidationInternal(Exception ex, HttpHeaders headers,
+                                                            HttpStatusCode status, WebRequest request, BindingResult bindingResult) {
+        ProblemType problemType = ProblemType.INVALID_DATA;
+        String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.objects(problemObjects)
-				.build();
+        List<Problem.Object> problemObjects = bindingResult.getAllErrors().stream()
+                .map(objectError -> {
+                    String message = messageSource.getMessage(objectError, LocaleContextHolder.getLocale());
 
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
+                    String name = objectError.getObjectName();
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
-		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-		ProblemType problemType = ProblemType.SYSTEM_ERROR;
-		String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
+                    if (objectError instanceof FieldError) {
+                        name = ((FieldError) objectError).getField();
+                    }
 
-		log.error(ex.getMessage(), ex);
+                    return Problem.Object.builder()
+                            .name(name)
+                            .userMessage(message)
+                            .build();
+                })
+                .toList();
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(detail)
-				.build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .objects(problemObjects)
+                .build();
 
-		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-	}
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
 
-	@Override
-	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
-																   HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ProblemType problemType = ProblemType.SYSTEM_ERROR;
+        String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
 
-		ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
-		String detail = String.format("O recurso %s, que você tentou acessar, é inexistente.",
-				ex.getRequestURL());
+        log.error(ex.getMessage(), ex);
 
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.build();
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(detail)
+                .build();
 
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
-														HttpStatusCode status, WebRequest request) {
-
-		if (ex instanceof MethodArgumentTypeMismatchException) {
-			return handleMethodArgumentTypeMismatch(
-					(MethodArgumentTypeMismatchException) ex, headers, status, request);
-		}
-
-		return super.handleTypeMismatch(ex, headers, status, request);
-	}
-
-	private ResponseEntity<Object> handleMethodArgumentTypeMismatch(
-			MethodArgumentTypeMismatchException ex, HttpHeaders headers,
-			HttpStatusCode status, WebRequest request) {
-
-		ProblemType problemType = ProblemType.INVALID_PARAMETER;
-
-		String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
-						+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
-				ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
-
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.build();
-
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
-																  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-		Throwable rootCause = ExceptionUtils.getRootCause(ex);
-
-		if (rootCause instanceof InvalidFormatException) {
-			return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
-		} else if (rootCause instanceof PropertyBindingException) {
-			return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
-		}
-
-		ProblemType problemType = ProblemType.MESSAGE_INCOMPRESSIBLE;
-		String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
-
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.build();
-
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
-
-	private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex,
-														 HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-
-		String path = joinPath(ex.getPath());
-
-		ProblemType problemType = ProblemType.MESSAGE_INCOMPRESSIBLE;
-		String detail = String.format("A propriedade '%s' não existe. "
-				+ "Corrija ou remova essa propriedade e tente novamente.", path);
-
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.build();
-
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
-
-	private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex,
-													   HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-
-		String path = joinPath(ex.getPath());
-
-		ProblemType problemType = ProblemType.MESSAGE_INCOMPRESSIBLE;
-		String detail = String.format("A propriedade '%s' recebeu o valor '%s', "
-						+ "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
-				path, ex.getValue(), ex.getTargetType().getSimpleName());
-
-		Problem problem = createProblemBuilder(status, problemType, detail)
-				.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-				.build();
-
-		return handleExceptionInternal(ex, problem, headers, status, request);
-	}
-
-	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
-															 HttpStatusCode status, WebRequest request) {
-
-		if (body == null) {
-			body = Problem.builder()
-					.timestamp(OffsetDateTime.now())
-					.title(HttpStatus.valueOf(status.value()).getReasonPhrase())
-					.status(status.value())
-					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-					.build();
-		} else if (body instanceof String) {
-			body = Problem.builder()
-					.timestamp(OffsetDateTime.now())
-					.title((String) body)
-					.status(status.value())
-					.userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
-					.build();
-		}
-
-		return super.handleExceptionInternal(ex, body, headers, status, request);
-	}
-
-	private Problem.ProblemBuilder createProblemBuilder(HttpStatusCode status,
-														ProblemType problemType, String detail) {
-
-		return Problem.builder()
-				.timestamp(OffsetDateTime.now())
-				.status(status.value())
-				.type(problemType.getUri())
-				.title(problemType.getTitle())
-				.detail(detail);
-	}
-
-	private String joinPath(List<Reference> references) {
-		return references.stream()
-				.map(ref -> ref.getFieldName())
-				.collect(Collectors.joining("."));
-	}
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
+                                                                   HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.RESOURCE_NOT_FOUND;
+        String detail = String.format("O recurso %s, que você tentou acessar, é inexistente.",
+                ex.getRequestURL());
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleTypeMismatch(TypeMismatchException ex, HttpHeaders headers,
+                                                        HttpStatusCode status, WebRequest request) {
+
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            return handleMethodArgumentTypeMismatch(
+                    (MethodArgumentTypeMismatchException) ex, headers, status, request);
+        }
+
+        return super.handleTypeMismatch(ex, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex, HttpHeaders headers,
+            HttpStatusCode status, WebRequest request) {
+
+        ProblemType problemType = ProblemType.INVALID_PARAMETER;
+
+        String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
+                        + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+        Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+        if (rootCause instanceof InvalidFormatException) {
+            return handleInvalidFormat((InvalidFormatException) rootCause, headers, status, request);
+        } else if (rootCause instanceof PropertyBindingException) {
+            return handlePropertyBinding((PropertyBindingException) rootCause, headers, status, request);
+        }
+
+        ProblemType problemType = ProblemType.MESSAGE_INCOMPRESSIBLE;
+        String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex,
+                                                         HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        String path = joinPath(ex.getPath());
+
+        ProblemType problemType = ProblemType.MESSAGE_INCOMPRESSIBLE;
+        String detail = String.format("A propriedade '%s' não existe. "
+                + "Corrija ou remova essa propriedade e tente novamente.", path);
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex,
+                                                       HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+
+        String path = joinPath(ex.getPath());
+
+        ProblemType problemType = ProblemType.MESSAGE_INCOMPRESSIBLE;
+        String detail = String.format("A propriedade '%s' recebeu o valor '%s', "
+                        + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
+                path, ex.getValue(), ex.getTargetType().getSimpleName());
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
+                                                             HttpStatusCode status, WebRequest request) {
+
+        if (body == null) {
+            body = Problem.builder()
+                    .timestamp(OffsetDateTime.now())
+                    .title(HttpStatus.valueOf(status.value()).getReasonPhrase())
+                    .status(status.value())
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                    .build();
+        } else if (body instanceof String) {
+            body = Problem.builder()
+                    .timestamp(OffsetDateTime.now())
+                    .title((String) body)
+                    .status(status.value())
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                    .build();
+        }
+
+        return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    private Problem.ProblemBuilder createProblemBuilder(HttpStatusCode status,
+                                                        ProblemType problemType, String detail) {
+
+        return Problem.builder()
+                .timestamp(OffsetDateTime.now())
+                .status(status.value())
+                .type(problemType.getUri())
+                .title(problemType.getTitle())
+                .detail(detail);
+    }
+
+    private String joinPath(List<Reference> references) {
+        return references.stream()
+                .map(ref -> ref.getFieldName())
+                .collect(Collectors.joining("."));
+    }
 
 }
