@@ -31,11 +31,11 @@ public class TransferServiceAdapter implements ITransferServicePort {
         log.info("Payee {}", payee);
 
         GetAccountHttpClientResponseDTO payer = msAccountHttpClientPort.getAccount(createTransferModel.getPayer());
-        log.info("Payee {}", payer);
+        log.info("Payer {}", payer);
 
-        if (Objects.equals(payer.getType(), AccountType.SHOPKEEPERS)) {
+        if (Objects.equals(payer.getType(), AccountType.SHOPKEEPERS))
             throw new InvalidPayerTypeException("O pagador não pode ser do tipo " + AccountType.SHOPKEEPERS);
-        }
+
 
         //TODO: update account balance
 

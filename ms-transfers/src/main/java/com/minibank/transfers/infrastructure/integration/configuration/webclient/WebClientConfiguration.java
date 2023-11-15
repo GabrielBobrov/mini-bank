@@ -34,8 +34,6 @@ public class WebClientConfiguration {
         return this.createConnection(msAccountProperties.getHost(), MsAccountHttpClient.class);
     }
 
-
-
     private <S> S createConnection(String url, Class<S> hostInterface) throws NotificationException {
 
         log.info("url: {}, class {}", url, hostInterface.getSimpleName());
