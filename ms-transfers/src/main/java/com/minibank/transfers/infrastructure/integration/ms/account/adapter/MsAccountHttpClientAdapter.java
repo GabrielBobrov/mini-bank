@@ -13,14 +13,13 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class MsAccountHttpClientAdapter implements IMsAccountHttpClientPort {
+
     private final MsAccountHttpClient msAccountHttpClient;
+
     @Override
     public GetAccountHttpClientResponseDTO getAccount(UUID id) {
         log.info("Class {} method getAccount", this.getClass().getName());
 
-        GetAccountHttpClientResponseDTO account = msAccountHttpClient.getAccount(id);
-        log.info("GetAccountHttpClientResponseDTO {}", account);
-
-        return account;
+        return msAccountHttpClient.getAccount(id);
     }
 }

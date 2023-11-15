@@ -1,1 +1,0 @@
-package com.minibank.transfers.core.ports;

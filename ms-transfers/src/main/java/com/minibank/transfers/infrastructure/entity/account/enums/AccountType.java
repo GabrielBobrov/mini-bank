@@ -1,4 +1,4 @@
-package com.minibank.transfers.infrastructure.entity.enums;
+package com.minibank.transfers.infrastructure.entity.account.enums;
 
 /**
  * The enumeration representing the different types of accounts in the system.

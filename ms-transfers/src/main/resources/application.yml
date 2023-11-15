@@ -1,4 +1,0 @@
-server:
-  port: 8081
-account:
-  host: ${ACCOUNT_HOST:http://localhost:8080}
