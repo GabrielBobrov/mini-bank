@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IAccountEntrypointMapper {
-    CreateAccountModel fromCreateAccountRequestDTOToAccountModel(CreateAccountRequestDTO accountRequestDTO);
+    CreateAccountModel fromCreateAccountRequestDTOToCreateAccountModel(CreateAccountRequestDTO accountRequestDTO);
 
     GetAccountResponseDTO fromGetAccountModelToGetAccountResponseDTO(GetAccountModel getAccountModel);
 
