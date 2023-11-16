@@ -35,7 +35,7 @@ public class TransferServiceAdapter implements ITransferServicePort {
         GetAccountHttpClientResponseDTO payer = msAccountHttpClientPort.getAccount(createTransferModel.getPayer());
         log.info("Payer {}", payer);
 
-        validateTransfer(createTransferModel, payer, payee);
+        validateTransfer(createTransferModel, payer);
 
         //TODO: update account balance
 
@@ -46,8 +46,7 @@ public class TransferServiceAdapter implements ITransferServicePort {
     }
 
     private void validateTransfer(CreateTransferModel createTransferModel,
-                                  GetAccountHttpClientResponseDTO payer,
-                                  GetAccountHttpClientResponseDTO payee) {
+                                  GetAccountHttpClientResponseDTO payer) {
         log.info("Class {} method validateTransfer", this.getClass().getName());
 
         if (Objects.equals(payer.getType(), AccountType.SHOPKEEPERS)) {
@@ -58,7 +57,7 @@ public class TransferServiceAdapter implements ITransferServicePort {
 
             throw new InvalidPayerTypeException("O pagador não pode ser do tipo " + AccountType.SHOPKEEPERS);
         }
-        if (payee.getBalance().compareTo(createTransferModel.getAmount()) < 0) {
+        if (payer.getBalance().compareTo(createTransferModel.getAmount()) < 0) {
 
             createTransferModel.setStatus(TransferStatusType.ERROR);
             createTransferModel.setReason(TransferReasonType.INSUFFICIENT_BALANCE);
