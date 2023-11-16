@@ -12,6 +12,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -30,5 +31,6 @@ public class GetAccountHttpClientResponseDTO extends RepresentationModel<GetAcco
     private String document;
     private String password;
     private AccountType type;
+    private BigDecimal balance;
 
 }

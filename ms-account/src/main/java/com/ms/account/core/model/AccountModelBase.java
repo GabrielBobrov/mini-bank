@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @SuperBuilder(toBuilder = true)
@@ -20,5 +22,6 @@ public class AccountModelBase {
     private String document;
     private String password;
     private AccountType type;
+    private BigDecimal balance;
 
 }

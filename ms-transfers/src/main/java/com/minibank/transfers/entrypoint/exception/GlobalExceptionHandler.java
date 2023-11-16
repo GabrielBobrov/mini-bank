@@ -4,6 +4,7 @@ package com.minibank.transfers.entrypoint.exception;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import com.minibank.transfers.core.exception.InsufficientBalanceException;
 import com.minibank.transfers.core.exception.InvalidPayerTypeException;
 import com.minibank.transfers.core.exception.NotFoundException;
 import com.minibank.transfers.core.exception.NotificationException;
@@ -69,8 +70,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return this.handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
-    @ExceptionHandler(InvalidPayerTypeException.class)
-    public ResponseEntity<Object> handleInvalidPayerTypeException(InvalidPayerTypeException ex, WebRequest request) {
+    @ExceptionHandler({InvalidPayerTypeException.class,
+            InsufficientBalanceException.class,})
+    public ResponseEntity<Object> handleBadRequest(Exception ex, WebRequest request) {
 
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ProblemType problemType = ProblemType.BUSINESS_ERROR;
