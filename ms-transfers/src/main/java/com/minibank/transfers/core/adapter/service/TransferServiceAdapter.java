@@ -57,6 +57,7 @@ public class TransferServiceAdapter implements ITransferServicePort {
 
             throw new InvalidPayerTypeException("O pagador não pode ser do tipo " + AccountType.SHOPKEEPERS);
         }
+
         if (payer.getBalance().compareTo(createTransferModel.getAmount()) < 0) {
 
             createTransferModel.setStatus(TransferStatusType.ERROR);

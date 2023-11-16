@@ -27,7 +27,7 @@ public class TransferController  {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createTransfer(@RequestBody @Valid CreateTransferRequestDTO createTransferRequestDTO) {
-        log.info("Class {} method createAccount", this.getClass().getName());
+        log.info("Class {} method createTransfer", this.getClass().getName());
         log.info("CreateTransferRequestDTO {}", createTransferRequestDTO);
 
         CreateTransferModel createTransferModel = transferEntrypointMapper.fromCreateTransferRequestDTOToCreateTransferModel(createTransferRequestDTO);
