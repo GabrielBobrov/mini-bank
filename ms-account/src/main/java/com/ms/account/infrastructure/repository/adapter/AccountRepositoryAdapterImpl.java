@@ -9,15 +9,12 @@ import com.ms.account.infrastructure.entity.AccountEntity;
 import com.ms.account.infrastructure.filter.AccountFilter;
 import com.ms.account.infrastructure.mapper.IAccountInfrastructureMapper;
 import com.ms.account.infrastructure.specs.AccountSpecs;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.web.PagedResourcesAssembler;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -143,7 +140,7 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
 
         AccountEntity accountEntity = getAccountEntity(id);
         accountEntity.updateBalance(balance);
-        log.info("AccountEntity Updated {}", accountEntity);
+        log.info("AccountEntity updated {}", accountEntity);
 
         springAccountRepository.save(accountEntity);
     }
