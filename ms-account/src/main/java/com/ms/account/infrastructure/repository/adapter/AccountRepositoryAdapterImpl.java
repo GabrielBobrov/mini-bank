@@ -143,7 +143,7 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
 
         AccountEntity accountEntity = getAccountEntity(id);
         accountEntity.updateBalance(balance);
-        log.info("AccountUpdated {}", accountEntity);
+        log.info("AccountEntity Updated {}", accountEntity);
 
         springAccountRepository.save(accountEntity);
     }
