@@ -139,9 +139,9 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
      */
     @Override
     public void updateBalance(BigDecimal balance, UUID id) {
+        log.info("Class {} method updateBalance", this.getClass().getName());
 
         AccountEntity accountEntity = getAccountEntity(id);
-
         accountEntity.updateBalance(balance);
         log.info("AccountUpdated {}", accountEntity);
 
