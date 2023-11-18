@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,6 +42,7 @@ class AccountRepositoryAdapterImplTest {
     private AccountEntity mockAccountEntity;
     private GetAccountModel mockGetAccountModel;
     private UUID mockAccountId;
+    private BigDecimal mockBalance;
 
     @BeforeEach
     public void setup() {
@@ -48,6 +50,7 @@ class AccountRepositoryAdapterImplTest {
         mockAccountEntity = AccountDummy.accountEntityBuilder().build();
         mockGetAccountModel = AccountDummy.getAccountModelBuilder().build();
         mockAccountId = UUID.randomUUID();
+        mockBalance = BigDecimal.valueOf(1000);
     }
 
     @Test
@@ -58,7 +61,6 @@ class AccountRepositoryAdapterImplTest {
 
         verify(springAccountRepository, times(1)).save(mockAccountEntity);
     }
-
 
     @Test
     void testGetAccountWhenValidAccountIdThenReturnGetAccountModel() {
@@ -99,5 +101,21 @@ class AccountRepositoryAdapterImplTest {
         Boolean result = accountRepositoryAdapterImpl.existsByDocumentOrEmail(mockCreateAccountModel.getDocument(), mockCreateAccountModel.getEmail());
 
         assertEquals(true, result);
+    }
+
+    @Test
+    void testUpdateBalanceWhenValidBalanceAndAccountIdThenUpdateBalanceAndSaveAccountEntity() {
+        when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.of(mockAccountEntity));
+
+        accountRepositoryAdapterImpl.updateBalance(mockBalance, mockAccountId);
+
+        verify(springAccountRepository, times(1)).save(mockAccountEntity);
+    }
+
+    @Test
+    void testUpdateBalanceWhenInvalidAccountIdThenThrowNotFoundException() {
+        when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.empty());
+
+        assertThrows(NotFoundException.class, () -> accountRepositoryAdapterImpl.updateBalance(mockBalance, mockAccountId));
     }
 }

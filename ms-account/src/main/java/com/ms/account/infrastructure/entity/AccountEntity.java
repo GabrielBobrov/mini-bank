@@ -59,4 +59,8 @@ public class AccountEntity {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
+
+    public void updateBalance(BigDecimal balance){
+        this.balance = balance;
+    }
 }

@@ -63,7 +63,6 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
      * @param createAccountModel The CreateAccountModel object containing the account information to be saved.
      */
     @Override
-    @Transactional
     public void create(CreateAccountModel createAccountModel) {
         log.info("Class {} method create", this.getClass().getName());
         log.info("CreateAccountModel {}", createAccountModel);
@@ -86,9 +85,7 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
     public GetAccountModel getAccount(UUID id) {
         log.info("Class {} method getAccount", this.getClass().getName());
 
-        AccountEntity accountEntity = springAccountRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Conta não encontrada com id " + id));
-        log.info("AccountEntity {}", accountEntity);
+        AccountEntity accountEntity = getAccountEntity(id);
 
         GetAccountModel getAccountModel = accountInfrastructureMapper.fromAccountEntityToGetAccountModel(accountEntity);
         log.info("GetAccountModel {}", getAccountModel);
@@ -131,6 +128,31 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
         log.info("Class {} method existsByDocumentOrEmail", this.getClass().getName());
 
         return springAccountRepository.existsByDocumentOrEmail(document, email);
+    }
+
+    /**
+     * Updates the balance of an account with the specified ID.
+     *
+     * @param balance The new balance to be set.
+     * @param id      The ID of the account to update.
+     * @throws NotFoundException if the account with the specified ID is not found.
+     */
+    @Override
+    public void updateBalance(BigDecimal balance, UUID id) {
+
+        AccountEntity accountEntity = getAccountEntity(id);
+
+        accountEntity.updateBalance(balance);
+        log.info("AccountUpdated {}", accountEntity);
+
+        springAccountRepository.save(accountEntity);
+    }
+
+    private AccountEntity getAccountEntity(UUID id) {
+        AccountEntity accountEntity = springAccountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada com id " + id));
+        log.info("AccountEntity {}", accountEntity);
+        return accountEntity;
     }
 
     private Pageable translatePageable(Pageable apiPageable) {

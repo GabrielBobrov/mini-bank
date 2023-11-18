@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +39,19 @@ class AccountServiceAdapterImplTest {
     @BeforeEach
     public void setUp() {
         createAccountModel = AccountDummy.createAccountModelBuilder().build();
+    }
+
+    @Test
+    @DisplayName("Test the 'updateBalance' method when a valid balance and UUID are passed")
+    void testUpdateBalanceWhenValidBalanceAndUUIDThenUpdateBalance() {
+        UUID uuid = UUID.randomUUID();
+        BigDecimal balance = BigDecimal.valueOf(1000);
+
+        doNothing().when(accountRepositoryPort).updateBalance(balance, uuid);
+
+        accountServiceAdapter.updateBalance(balance, uuid);
+
+        verify(accountRepositoryPort, times(1)).updateBalance(balance, uuid);
     }
 
     @Test

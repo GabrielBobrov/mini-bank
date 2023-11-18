@@ -6,12 +6,14 @@ import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.core.ports.in.service.IAccountServicePort;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
 import com.ms.account.infrastructure.filter.AccountFilter;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -42,6 +44,7 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
     private final IAccountRepositoryPort accountRepositoryPort;
 
     @Override
+    @Transactional
     public void createAccount(CreateAccountModel createAccountModel) {
         log.info("Class {} method save", this.getClass().getName());
         log.info("AccountModel {}", createAccountModel);
@@ -66,5 +69,13 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
         log.info("Class {} method getAccounts", this.getClass().getName());
 
         return accountRepositoryPort.getAccounts(accountFilter, pageable);
+    }
+
+    @Override
+    @Transactional
+    public void updateBalance(BigDecimal balance, UUID id) {
+        log.info("Class {} method updateBalance", this.getClass().getName());
+
+        accountRepositoryPort.updateBalance(balance, id);
     }
 }
