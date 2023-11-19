@@ -55,7 +55,7 @@ class AccountRepositoryAdapterImplTest {
 
     @Test
     void testSaveWhenValidAccountModelThenSaveAccountEntity() {
-        when(IAccountInfrastructureMapper.fromAccountModelToAccountEntity(mockCreateAccountModel)).thenReturn(mockAccountEntity);
+        when(IAccountInfrastructureMapper.fromCreateAccountModelToAccountEntity(mockCreateAccountModel)).thenReturn(mockAccountEntity);
 
         accountRepositoryAdapterImpl.create(mockCreateAccountModel);
 
@@ -105,17 +105,13 @@ class AccountRepositoryAdapterImplTest {
 
     @Test
     void testUpdateBalanceWhenValidBalanceAndAccountIdThenUpdateBalanceAndSaveAccountEntity() {
-        when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.of(mockAccountEntity));
+        GetAccountModel getAccountModel = AccountDummy.getAccountModelBuilder().build();
 
-        accountRepositoryAdapterImpl.updateBalance(mockBalance, mockAccountId);
+        when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.of(mockAccountEntity));
+        when(IAccountInfrastructureMapper.fromGetAccountModelToAccountEntity(getAccountModel)).thenReturn(mockAccountEntity);
+
+        accountRepositoryAdapterImpl.updateBalance(mockBalance, getAccountModel);
 
         verify(springAccountRepository, times(1)).save(mockAccountEntity);
-    }
-
-    @Test
-    void testUpdateBalanceWhenInvalidAccountIdThenThrowNotFoundException() {
-        when(springAccountRepository.findById(mockAccountId)).thenReturn(Optional.empty());
-
-        assertThrows(NotFoundException.class, () -> accountRepositoryAdapterImpl.updateBalance(mockBalance, mockAccountId));
     }
 }

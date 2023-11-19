@@ -44,14 +44,16 @@ class AccountServiceAdapterImplTest {
     @Test
     @DisplayName("Test the 'updateBalance' method when a valid balance and UUID are passed")
     void testUpdateBalanceWhenValidBalanceAndUUIDThenUpdateBalance() {
-        UUID uuid = UUID.randomUUID();
+        GetAccountModel getAccountModel = AccountDummy.getAccountModelBuilder().build();
         BigDecimal balance = BigDecimal.valueOf(1000);
+        UUID uuid = UUID.randomUUID();
 
-        doNothing().when(accountRepositoryPort).updateBalance(balance, uuid);
+        when(accountRepositoryPort.getAccount(uuid)).thenReturn(getAccountModel);
+        doNothing().when(accountRepositoryPort).updateBalance(balance, getAccountModel);
 
         accountServiceAdapter.updateBalance(balance, uuid);
 
-        verify(accountRepositoryPort, times(1)).updateBalance(balance, uuid);
+        verify(accountRepositoryPort, times(1)).updateBalance(balance, getAccountModel);
     }
 
     @Test

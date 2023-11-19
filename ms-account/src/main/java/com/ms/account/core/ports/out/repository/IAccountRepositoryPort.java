@@ -20,6 +20,6 @@ public interface IAccountRepositoryPort {
 
     Boolean existsByDocumentOrEmail(String document, String email);
 
-    void updateBalance(BigDecimal balance,  UUID id);
+    void updateBalance(BigDecimal balance,  GetAccountModel getAccountModel);
 
 }

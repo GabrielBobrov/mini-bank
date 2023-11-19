@@ -64,7 +64,7 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
         log.info("Class {} method create", this.getClass().getName());
         log.info("CreateAccountModel {}", createAccountModel);
 
-        AccountEntity accountEntity = accountInfrastructureMapper.fromAccountModelToAccountEntity(createAccountModel);
+        AccountEntity accountEntity = accountInfrastructureMapper.fromCreateAccountModelToAccountEntity(createAccountModel);
         accountEntity.setBalance(BigDecimal.ZERO);
         log.info("AccountEntity {}", accountEntity);
 
@@ -82,7 +82,9 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
     public GetAccountModel getAccount(UUID id) {
         log.info("Class {} method getAccount", this.getClass().getName());
 
-        AccountEntity accountEntity = getAccountEntity(id);
+        AccountEntity accountEntity = springAccountRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada com id " + id));
+        log.info("AccountEntity {}", accountEntity);
 
         GetAccountModel getAccountModel = accountInfrastructureMapper.fromAccountEntityToGetAccountModel(accountEntity);
         log.info("GetAccountModel {}", getAccountModel);
@@ -130,26 +132,18 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
     /**
      * Updates the balance of an account with the specified ID.
      *
-     * @param balance The new balance to be set.
-     * @param id      The ID of the account to update.
-     * @throws NotFoundException if the account with the specified ID is not found.
+     * @param balance              The new balance to be set.
+     * @param getAccountModel      The account to update.
+     * @throws NotFoundException   if the account with the specified ID is not found.
      */
     @Override
-    public void updateBalance(BigDecimal balance, UUID id) {
+    public void updateBalance(BigDecimal balance, GetAccountModel getAccountModel) {
         log.info("Class {} method updateBalance", this.getClass().getName());
-
-        AccountEntity accountEntity = getAccountEntity(id);
+        AccountEntity accountEntity = accountInfrastructureMapper.fromGetAccountModelToAccountEntity(getAccountModel);
         accountEntity.updateBalance(balance);
         log.info("AccountEntity updated {}", accountEntity);
 
         springAccountRepository.save(accountEntity);
-    }
-
-    private AccountEntity getAccountEntity(UUID id) {
-        AccountEntity accountEntity = springAccountRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Conta não encontrada com id " + id));
-        log.info("AccountEntity {}", accountEntity);
-        return accountEntity;
     }
 
     private Pageable translatePageable(Pageable apiPageable) {

@@ -41,6 +41,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class AccountServiceAdapterImpl implements IAccountServicePort {
+
     private final IAccountRepositoryPort accountRepositoryPort;
 
     @Override
@@ -75,7 +76,8 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
     @Transactional
     public void updateBalance(BigDecimal balance, UUID id) {
         log.info("Class {} method updateBalance", this.getClass().getName());
+        GetAccountModel account = accountRepositoryPort.getAccount(id);
 
-        accountRepositoryPort.updateBalance(balance, id);
+        accountRepositoryPort.updateBalance(balance, account);
     }
 }
