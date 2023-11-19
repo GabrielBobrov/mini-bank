@@ -8,8 +8,10 @@ import com.ms.account.dummy.AccountDummy;
 import com.ms.account.entrypoint.UrlConstant;
 import com.ms.account.entrypoint.assembler.AccountAssembler;
 import com.ms.account.entrypoint.dto.request.CreateAccountRequestDTO;
+import com.ms.account.entrypoint.dto.request.UpdateBalanceRequestDTO;
 import com.ms.account.entrypoint.dto.response.GetAccountResponseDTO;
 import com.ms.account.entrypoint.mapper.IAccountEntrypointMapper;
+import com.ms.account.infrastructure.filter.AccountFilter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,10 +25,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -53,6 +57,20 @@ class AccountControllerTest {
 
     @MockBean
     private PagedResourcesAssembler<GetAccountModel> pagedResourcesAssembler;
+
+
+    @Test
+    void testUpdateBalanceWhenValidRequestThenReturnOk() throws Exception {
+        UUID accountId = UUID.randomUUID();
+        UpdateBalanceRequestDTO updateBalanceRequestDTO = AccountDummy.updateBalanceRequestDTOBuilder().build();
+
+        mockMvc.perform(MockMvcRequestBuilders.patch(UrlConstant.ACCOUNT_URI + "/" + accountId + "/balance")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateBalanceRequestDTO)))
+                .andExpect(status().isOk());
+
+        verify(IAccountServicePort).updateBalance(updateBalanceRequestDTO.getBalance(), accountId);
+    }
 
     @Test
     void testGetAccountsWhenValidFilterAndPageableThenReturnAccounts() throws Exception {

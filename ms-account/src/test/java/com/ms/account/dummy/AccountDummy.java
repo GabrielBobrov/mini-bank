@@ -4,10 +4,12 @@ import com.github.javafaker.Faker;
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.entrypoint.dto.request.CreateAccountRequestDTO;
+import com.ms.account.entrypoint.dto.request.UpdateBalanceRequestDTO;
 import com.ms.account.entrypoint.dto.response.GetAccountResponseDTO;
 import com.ms.account.infrastructure.entity.AccountEntity;
 import com.ms.account.infrastructure.entity.enums.AccountType;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class AccountDummy {
@@ -49,5 +51,10 @@ public class AccountDummy {
         return GetAccountResponseDTO.builder()
                 .firstName(faker.name().firstName())
                 .id(UUID.randomUUID());
+    }
+
+    public static UpdateBalanceRequestDTO.UpdateBalanceRequestDTOBuilder updateBalanceRequestDTOBuilder() {
+        return UpdateBalanceRequestDTO.builder()
+                .balance(BigDecimal.TEN);
     }
 }

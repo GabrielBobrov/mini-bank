@@ -4,6 +4,7 @@ import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
 import com.ms.account.core.ports.in.service.IAccountServicePort;
 import com.ms.account.entrypoint.assembler.AccountAssembler;
+import com.ms.account.entrypoint.dto.request.UpdateBalanceRequestDTO;
 import com.ms.account.entrypoint.mapper.IAccountEntrypointMapper;
 import com.ms.account.entrypoint.openapi.controller.AccountControllerOpenApi;
 import com.ms.account.entrypoint.UrlConstant;
@@ -20,13 +21,16 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Slf4j
@@ -76,6 +80,16 @@ public class AccountController implements AccountControllerOpenApi {
         log.info("PagedModel<GetAccountResponseDTO> {}", responseDTOS);
 
         return responseDTOS;
+    }
+
+    @PatchMapping("{accountId}/balance")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateBalance(@PathVariable UUID accountId,
+                              @Valid @RequestBody UpdateBalanceRequestDTO updateBalanceRequestDTO) {
+
+        log.info("Class {} method updateBalance", this.getClass().getName());
+
+        accountServicePort.updateBalance(updateBalanceRequestDTO.getBalance(), accountId);
     }
 }
 
