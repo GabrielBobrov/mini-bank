@@ -83,7 +83,7 @@ public class AccountController implements AccountControllerOpenApi {
     }
 
     @PatchMapping("{accountId}/balance")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateBalance(@PathVariable UUID accountId,
                               @Valid @RequestBody UpdateBalanceRequestDTO updateBalanceRequestDTO) {
 
