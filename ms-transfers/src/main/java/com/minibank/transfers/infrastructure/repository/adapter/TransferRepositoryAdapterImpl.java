@@ -21,7 +21,6 @@ public class TransferRepositoryAdapterImpl implements ITransferRepositoryPort {
     private final ITransferInfrastructureMapper transferInfrastructureMapper;
 
     @Override
-    @Transactional
     public void create(CreateTransferModel createTransferModel) {
         log.info("Class {} method create", this.getClass().getName());
         log.info("CreateTransferModel {}", createTransferModel);

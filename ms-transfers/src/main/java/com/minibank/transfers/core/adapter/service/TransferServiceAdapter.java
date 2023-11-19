@@ -8,8 +8,10 @@ import com.minibank.transfers.core.ports.out.repository.ITransferRepositoryPort;
 import com.minibank.transfers.infrastructure.entity.account.enums.AccountType;
 import com.minibank.transfers.infrastructure.entity.transfer.enums.TransferReasonType;
 import com.minibank.transfers.infrastructure.entity.transfer.enums.TransferStatusType;
+import com.minibank.transfers.infrastructure.integration.ms.account.model.request.UpdateBalanceHttpClientRequestDTO;
 import com.minibank.transfers.infrastructure.integration.ms.account.model.response.GetAccountHttpClientResponseDTO;
 import com.minibank.transfers.infrastructure.integration.ms.account.port.in.IMsAccountHttpClientPort;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,10 @@ public class TransferServiceAdapter implements ITransferServicePort {
     private final ITransferRepositoryPort transferRepositoryPort;
 
     @Override
+    @Transactional(dontRollbackOn = {
+            InvalidPayerTypeException.class,
+            InsufficientBalanceException.class
+    })
     public void createTransfer(CreateTransferModel createTransferModel) {
         log.info("Class {} method createTransfer", this.getClass().getName());
         log.info("CreateTransferModel {}", createTransferModel);
@@ -37,7 +43,17 @@ public class TransferServiceAdapter implements ITransferServicePort {
 
         validateTransfer(createTransferModel, payer);
 
-        //TODO: update account balance
+        UpdateBalanceHttpClientRequestDTO payeeBalance = UpdateBalanceHttpClientRequestDTO.builder()
+                .balance(payee.getBalance().add(createTransferModel.getAmount()))
+                .build();
+
+        msAccountHttpClientPort.updateBalance(payee.getId(), payeeBalance);
+
+        UpdateBalanceHttpClientRequestDTO payerBalance = UpdateBalanceHttpClientRequestDTO.builder()
+                .balance(payer.getBalance().subtract(createTransferModel.getAmount()))
+                .build();
+
+        msAccountHttpClientPort.updateBalance(payer.getId(), payerBalance);
 
         createTransferModel.setStatus(TransferStatusType.SUCCESS);
         transferRepositoryPort.create(createTransferModel);
