@@ -20,6 +20,11 @@ public class TransferRepositoryAdapterImpl implements ITransferRepositoryPort {
     private final ISpringTransferRepositoryAdapter springTransferRepository;
     private final ITransferInfrastructureMapper transferInfrastructureMapper;
 
+    /**
+     * Creates a transfer with the specified transfer details.
+     *
+     * @param createTransferModel The transfer details.
+     */
     @Override
     public void create(CreateTransferModel createTransferModel) {
         log.info("Class {} method create", this.getClass().getName());

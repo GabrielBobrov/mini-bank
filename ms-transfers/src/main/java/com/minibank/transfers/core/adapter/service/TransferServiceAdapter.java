@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+/**
+ * Adapter for the transfer service.
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -26,6 +29,13 @@ public class TransferServiceAdapter implements ITransferServicePort {
     private final IMsAccountHttpClientPort msAccountHttpClientPort;
     private final ITransferRepositoryPort transferRepositoryPort;
 
+    /**
+     * Creates a transfer with the specified transfer details.
+     *
+     * @param createTransferModel The transfer details.
+     * @throws InvalidPayerTypeException   If the payer is of type SHOPKEEPERS.
+     * @throws InsufficientBalanceException If the payer does not have sufficient balance.
+     */
     @Override
     @Transactional(dontRollbackOn = {
             InvalidPayerTypeException.class,
@@ -57,8 +67,6 @@ public class TransferServiceAdapter implements ITransferServicePort {
 
         createTransferModel.setStatus(TransferStatusType.SUCCESS);
         transferRepositoryPort.create(createTransferModel);
-
-
     }
 
     private void validateTransfer(CreateTransferModel createTransferModel,
