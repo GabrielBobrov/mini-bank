@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
+
 /**
  * Adapter for the MS Account HTTP client.
  */
@@ -35,7 +36,7 @@ public class MsAccountHttpClientAdapter implements IMsAccountHttpClientPort {
     /**
      * Updates the balance of an account with the specified ID using the MS Account service.
      *
-     * @param id                              The ID of the account.
+     * @param id                                The ID of the account.
      * @param updateBalanceHttpClientRequestDTO The updated balance details.
      */
     @Override
