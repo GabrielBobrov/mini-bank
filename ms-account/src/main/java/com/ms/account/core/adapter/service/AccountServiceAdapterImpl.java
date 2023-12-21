@@ -47,8 +47,8 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
     @Override
     @Transactional
     public void createAccount(CreateAccountModel createAccountModel) {
-        log.info("Class {} method save", this.getClass().getName());
-        log.info("AccountModel {}", createAccountModel);
+        log.info("Class {} method createAccount", this.getClass().getName());
+        log.info("CreateAccountModel {}", createAccountModel);
 
         Boolean accountAlreadyExists = accountRepositoryPort.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail());
 
