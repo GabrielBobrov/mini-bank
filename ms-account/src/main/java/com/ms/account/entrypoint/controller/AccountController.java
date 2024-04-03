@@ -91,6 +91,19 @@ public class AccountController implements AccountControllerOpenApi {
 
         accountServicePort.updateBalance(updateBalanceRequestDTO.getBalance(), accountId);
     }
+
+    @GetMapping("by-email/{emailAddress}")
+    @ResponseStatus(HttpStatus.OK)
+    public GetAccountResponseDTO getAccountByEmail(@PathVariable String emailAddress) {
+        log.info("Class {} method getAccountByEmail", this.getClass().getName());
+
+        GetAccountModel account = accountServicePort.getAccountByEmail(emailAddress);
+
+        GetAccountResponseDTO response = accountAssembler.toModel(account);
+        log.info("GetAccountResponseDTO {}", response);
+
+        return response;
+    }
 }
 
 

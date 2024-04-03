@@ -146,6 +146,19 @@ public class AccountRepositoryAdapterImpl implements IAccountRepositoryPort {
         springAccountRepository.save(accountEntity);
     }
 
+    @Override
+    public GetAccountModel getAccountByEmail(String emailAddress) {
+        log.info("Class {} method getAccountByEmail", this.getClass().getName());
+
+        AccountEntity accountEntity = springAccountRepository.findByEmail(emailAddress)
+                .orElseThrow(() -> new NotFoundException("Conta não encontrada com email " + emailAddress));
+        log.info("AccountEntity {}", accountEntity);
+
+        GetAccountModel getAccountModel = accountInfrastructureMapper.fromAccountEntityToGetAccountModel(accountEntity);
+        log.info("GetAccountModel {}", getAccountModel);
+        return getAccountModel;
+    }
+
     private Pageable translatePageable(Pageable apiPageable) {
         var mapping = Map.of(
                 "firstName", "firstName",

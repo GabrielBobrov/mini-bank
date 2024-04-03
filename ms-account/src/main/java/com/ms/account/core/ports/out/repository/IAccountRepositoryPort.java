@@ -21,4 +21,7 @@ public interface IAccountRepositoryPort {
 
     void updateBalance(BigDecimal balance,  GetAccountModel getAccountModel);
 
+    GetAccountModel getAccountByEmail(String emailAddress);
+
+
 }

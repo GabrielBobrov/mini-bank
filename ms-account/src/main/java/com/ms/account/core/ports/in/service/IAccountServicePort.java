@@ -15,6 +15,9 @@ public interface IAccountServicePort {
 
     GetAccountModel getAccount(UUID id);
 
+    GetAccountModel getAccountByEmail(String email);
+
+
     Page<GetAccountModel> getAccounts(AccountFilter accountFilter, Pageable pageable);
 
     void updateBalance(BigDecimal amount, UUID id);

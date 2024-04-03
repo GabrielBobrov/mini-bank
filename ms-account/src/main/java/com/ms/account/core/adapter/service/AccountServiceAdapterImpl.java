@@ -66,6 +66,13 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
     }
 
     @Override
+    public GetAccountModel getAccountByEmail(String email) {
+        log.info("Class {} method getAccountByEmail", this.getClass().getName());
+
+        return accountRepositoryPort.getAccountByEmail(email);
+    }
+
+    @Override
     public Page<GetAccountModel> getAccounts(AccountFilter accountFilter, Pageable pageable) {
         log.info("Class {} method getAccounts", this.getClass().getName());
 
