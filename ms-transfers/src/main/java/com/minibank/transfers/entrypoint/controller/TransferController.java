@@ -1,7 +1,7 @@
 package com.minibank.transfers.entrypoint.controller;
 
 import com.minibank.transfers.core.model.CreateTransferModel;
-import com.minibank.transfers.core.ports.in.service.ITransferServicePort;
+import com.minibank.transfers.core.ports.in.service.transaction.ITransferServicePort;
 import com.minibank.transfers.entrypoint.dto.request.CreateTransferRequestDTO;
 import com.minibank.transfers.entrypoint.UrlConstant;
 import com.minibank.transfers.entrypoint.mapper.ITransferEntrypointMapper;

@@ -1,11 +1,14 @@
-package com.minibank.transfers.core.adapter.service;
+package com.minibank.transfers.core.adapter.service.transaction;
 
+import com.minibank.transfers.core.adapter.service.notification.NotificationServiceAdapter;
 import com.minibank.transfers.core.exception.InsufficientBalanceException;
 import com.minibank.transfers.core.exception.InvalidPayerTypeException;
 import com.minibank.transfers.core.model.CreateTransferModel;
-import com.minibank.transfers.core.ports.in.service.ITransferServicePort;
+import com.minibank.transfers.core.ports.in.service.notification.INotificationServicePort;
+import com.minibank.transfers.core.ports.in.service.transaction.ITransferServicePort;
 import com.minibank.transfers.core.ports.out.repository.ITransferRepositoryPort;
 import com.minibank.transfers.infrastructure.entity.account.enums.AccountType;
+import com.minibank.transfers.infrastructure.entity.transfer.TransferEntity;
 import com.minibank.transfers.infrastructure.entity.transfer.enums.TransferReasonType;
 import com.minibank.transfers.infrastructure.entity.transfer.enums.TransferStatusType;
 import com.minibank.transfers.infrastructure.integration.ms.account.model.request.UpdateBalanceHttpClientRequestDTO;
@@ -28,6 +31,7 @@ public class TransferServiceAdapter implements ITransferServicePort {
 
     private final IMsAccountHttpClientPort msAccountHttpClientPort;
     private final ITransferRepositoryPort transferRepositoryPort;
+    private final INotificationServicePort notificationServiceAdapter;
 
     /**
      * Creates a transfer with the specified transfer details.
@@ -67,6 +71,7 @@ public class TransferServiceAdapter implements ITransferServicePort {
 
         createTransferModel.setStatus(TransferStatusType.SUCCESS);
         transferRepositoryPort.create(createTransferModel);
+        notificationServiceAdapter.notify(TransferEntity.builder().build());
     }
 
     private void validateTransfer(CreateTransferModel createTransferModel,
