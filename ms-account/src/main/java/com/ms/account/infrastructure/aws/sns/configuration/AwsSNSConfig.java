@@ -1,4 +1,4 @@
-package com.ms.account.infrastructure.sns.configuration;
+package com.ms.account.infrastructure.aws.sns.configuration;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.sns.AmazonSNSClient;

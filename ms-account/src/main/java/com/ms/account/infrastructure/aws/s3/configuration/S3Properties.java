@@ -1,4 +1,4 @@
-package com.ms.account.infrastructure.s3.configuration;
+package com.ms.account.infrastructure.aws.s3.configuration;
 
 import lombok.Getter;
 import lombok.Setter;

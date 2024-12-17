@@ -1,4 +1,4 @@
-package com.ms.account.infrastructure.sqs.configuration;
+package com.ms.account.infrastructure.aws.sqs.configuration;
 
 import io.awspring.cloud.sqs.operations.SqsTemplate;
 import org.springframework.beans.factory.annotation.Value;

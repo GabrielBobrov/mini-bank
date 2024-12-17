@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ms.account.core.ports.in.service.log.ILogServicePort;
-import com.ms.account.infrastructure.s3.configuration.S3Properties;
+import com.ms.account.infrastructure.aws.s3.configuration.S3Properties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
