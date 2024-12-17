@@ -1,8 +1,11 @@
 package com.ms.account.core.adapter.service;
 
 import com.ms.account.core.exception.AccountAlreadyExistsException;
+import com.ms.account.core.mapper.IMessagingCoreMapper;
 import com.ms.account.core.model.CreateAccountModel;
 import com.ms.account.core.model.GetAccountModel;
+import com.ms.account.core.ports.in.messaging.IMessagingPort;
+import com.ms.account.core.ports.in.pubsub.IPubSubPort;
 import com.ms.account.core.ports.in.service.IAccountServicePort;
 import com.ms.account.core.ports.out.repository.IAccountRepositoryPort;
 import com.ms.account.infrastructure.filter.AccountFilter;
@@ -43,6 +46,9 @@ import java.util.UUID;
 public class AccountServiceAdapterImpl implements IAccountServicePort {
 
     private final IAccountRepositoryPort accountRepositoryPort;
+    private final IMessagingPort messagingPort;
+    private final IPubSubPort pubSubPort;
+    private final IMessagingCoreMapper messagingCoreMapper;
 
     @Override
     @Transactional
@@ -52,10 +58,8 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
 
         Boolean accountAlreadyExists = accountRepositoryPort.existsByDocumentOrEmail(createAccountModel.getDocument(), createAccountModel.getEmail());
 
-        if (Objects.equals(Boolean.TRUE, accountAlreadyExists))
-            throw new AccountAlreadyExistsException("Usuário com mesmo documento ou email já existe");
-
         accountRepositoryPort.create(createAccountModel);
+        messagingPort.sendMessage(messagingCoreMapper.fromCreateAccountModelToCreateAccountMessagingModel(createAccountModel));
     }
 
     @Override

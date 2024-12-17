@@ -7,11 +7,10 @@ networks:
 services:
   minibank-mysql:
     image: mysql:8.0
-    command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: "gabriel1234"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-      - "3316:3306"
+      - "3306:3306"
     networks:
       - minibank-network
 
