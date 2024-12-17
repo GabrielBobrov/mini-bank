@@ -61,7 +61,6 @@ public class AccountServiceAdapterImpl implements IAccountServicePort {
         accountRepositoryPort.create(createAccountModel);
         messagingPort.sendMessage(messagingCoreMapper.fromCreateAccountModelToCreateAccountMessagingModel(createAccountModel));
     }
-
     @Override
     public GetAccountModel getAccount(UUID id) {
         log.info("Class {} method getAccount", this.getClass().getName());

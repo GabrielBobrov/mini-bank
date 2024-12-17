@@ -1,11 +1,11 @@
 package com.ms.account.core.adapter.messaging;
 
-import com.amazonaws.services.sns.AmazonSNSClient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ms.account.core.adapter.pubsub.SnsPubSub;
 import com.ms.account.core.model.CreateAccountMessagingModel;
 import com.ms.account.core.ports.in.messaging.IMessagingPort;
+import com.ms.account.core.ports.in.service.log.ILogServicePort;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import io.awspring.cloud.sqs.operations.SqsTemplate;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +20,8 @@ public class SqsMessaging implements IMessagingPort {
 
     private final SqsTemplate sqsTemplate;
     private final SnsPubSub snsPubSub;
+    private final ILogServicePort s3Service;
+
 
     private final ObjectMapper objectMapper;
 
@@ -43,7 +45,9 @@ public class SqsMessaging implements IMessagingPort {
         CreateAccountMessagingModel createAccountModel = objectMapper.readValue(message, CreateAccountMessagingModel.class);
         log.info("Received message to create account: {}", createAccountModel);
 
-        snsPubSub.subscribe(createAccountModel.getEmail());
+        s3Service.log("/" + createAccountModel.getDocument(), createAccountModel);
+
+        //snsPubSub.subscribe(createAccountModel.getEmail());
     }
 
 }

@@ -12,6 +12,7 @@ import lombok.Setter;
 public class CreateAccountMessagingModel  {
     private String email;
     private String firstName;
+    private String document;
 
 
 }
